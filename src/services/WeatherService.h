@@ -87,6 +87,15 @@ private:
     std::vector<WeatherUpdatedEventFuncCb> weatherUpdatedListeners;
 
     /**
+     * @brief Get the Update Task object
+     *
+     * @return Task*
+     */
+    virtual Task *getUpdateTask() {
+        return &weatherUpdateTask;
+    }
+
+    /**
      * @brief Call registered callbacks to indicate an update
      */
     void signalUpdate();

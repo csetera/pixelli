@@ -58,6 +58,15 @@ private:
     Task ntpUpdateTask;
 
     /**
+     * @brief Get the Update Task object
+     *
+     * @return Task*
+     */
+    virtual Task *getUpdateTask() {
+        return &ntpUpdateTask;
+    }
+
+    /**
      * @brief Use NTP to update the device's current time.
      */
     void ntpUpdate();

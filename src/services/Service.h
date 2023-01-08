@@ -19,7 +19,7 @@ public:
     /**
      * @brief Construct a new Service object
      */
-    Service() {}
+    Service(): paused(false) {}
 
     // Disable copy semantics
     Service(const Service&) = delete;
@@ -53,8 +53,28 @@ public:
         // Do nothing by default
     }
 
+    /**
+     * @brief Pause any service update tasks
+     */
+    virtual void pauseUpdates();
+
+    /**
+     * @brief Resume any service update tasks.
+     */
+    virtual void resumeUpdates();
+
 protected:
+    bool paused;
     Scheduler *scheduler;
+
+    /**
+     * @brief Get the Update Task object
+     *
+     * @return Task*
+     */
+    virtual Task *getUpdateTask() {
+        return nullptr;
+    }
 
     /**
      * @brief Return a boolean indicating whether wifi is currently connected.
