@@ -10,8 +10,19 @@
 #include <functional>
 
 #include <defaults.h>
+#include <services/ServiceRegistry.h>
 
 const int SCROLL_INTERVAL = 50; // millis
+/**
+ * @brief Callback for use when the display of the Widget has
+ * completed.  By default, just notifies the DisplayManager
+ * of completion.
+ */
+void ScrollingTextWidget::displayComplete() {
+    // Re-enable potentially long-running service tasks
+    ServiceRegistry::get().resumeUpdates();
+    BaseTextWidget::displayComplete();
+}
 
 /**
  * @brief Scrolling loop callback
@@ -35,6 +46,9 @@ void ScrollingTextWidget::scrollLoop() {
  * @brief Start displaying this Widget, scheduling updates as necessary.
  */
 void ScrollingTextWidget::startDisplay() {
+    // Pause potentially long-running service tasks
+    ServiceRegistry::get().pauseUpdates();
+
     scrollOffset = MATRIX_WIDTH;
 
     scrollTask = new Task();

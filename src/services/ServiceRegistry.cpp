@@ -111,3 +111,16 @@ Service* ServiceRegistry::operator[](const char *name) {
     return nullptr;
 }
 
+/**
+ * @brief Pause any service update tasks
+ */
+void ServiceRegistry::pauseUpdates() {
+    this->each([](Service *service) { service->pauseUpdates(); });
+}
+
+/**
+ * @brief Resume any service update tasks.
+ */
+void ServiceRegistry::resumeUpdates() {
+    this->each([](Service *service) { service->resumeUpdates(); });
+}

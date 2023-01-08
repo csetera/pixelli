@@ -25,3 +25,24 @@ void Service::init(Scheduler *scheduler) {
 bool Service::isWifiConnected() {
     return WiFi.status() == WL_CONNECTED;
 }
+
+
+/**
+ * @brief Pause any service update tasks
+ */
+void Service::pauseUpdates() {
+    Task *task = getUpdateTask();
+    if (!paused && (task != nullptr)) {
+        paused = task->disable();
+    }
+}
+
+/**
+ * @brief Resume any service update tasks.
+ */
+void Service::resumeUpdates() {
+    Task *task = getUpdateTask();
+    if (paused && (task != nullptr)) {
+        paused = !task->enableDelayed();
+    }
+}
