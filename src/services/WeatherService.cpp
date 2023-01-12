@@ -55,25 +55,27 @@ void WeatherService::signalUpdate() {
  */
 void WeatherService::weatherUpdate() {
     Logger &logger = Logger::get();
-    logger.println("Updating weather");
+    if (!delayIfPaused(weatherUpdateTask)) {
+        logger.println("Updating weather");
 
-    String url(BASE_URL);
-    url += OWM_API_KEY;
+        String url(BASE_URL);
+        url += OWM_API_KEY;
 
-    NetworkUtils::httpGet(url, [&](int httpResponse, Stream& responseStream) {
-        if (httpResponse > 0) {
-            StaticJsonDocument<64> jsonFilter;
-            jsonFilter["main"]["temp"] = true;
+        NetworkUtils::httpGet(url, [&](int httpResponse, Stream& responseStream) {
+            if (httpResponse > 0) {
+                StaticJsonDocument<64> jsonFilter;
+                jsonFilter["main"]["temp"] = true;
 
-            StaticJsonDocument<64> jsonResponse;
-            deserializeJson(jsonResponse, responseStream, DeserializationOption::Filter(jsonFilter));
+                StaticJsonDocument<64> jsonResponse;
+                deserializeJson(jsonResponse, responseStream, DeserializationOption::Filter(jsonFilter));
 
-            temperature = jsonResponse["main"]["temp"];
-            weatherAvailable = true;
+                temperature = jsonResponse["main"]["temp"];
+                weatherAvailable = true;
 
-        } else {
-            weatherAvailable = false;
-            Logger::get().printf("Weather update failed with code: %d\n", httpResponse);
-        }
-    });
+            } else {
+                weatherAvailable = false;
+                Logger::get().printf("Weather update failed with code: %d\n", httpResponse);
+            }
+        });
+    }
 }
