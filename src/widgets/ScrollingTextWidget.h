@@ -19,6 +19,13 @@ public:
     ScrollingTextWidget(Scheduler *scheduler) : BaseTextWidget(scheduler) { }
 
     /**
+     * @brief Callback for use when the display of the Widget has
+     * completed.  By default, just notifies the DisplayManager
+     * of completion.
+     */
+    virtual void displayComplete();
+
+    /**
      * @brief Return the name of the Widget.
      *
      * @return const char*

@@ -34,10 +34,10 @@ void TimeService::init(Scheduler *scheduler) {
         Logger::get().println("Time location changed callback");
         GeolocationService *locationService = (GeolocationService *) ServiceRegistry::get()[GeolocationService::NAME];
         if (locationService->isLocated()) {
-            Logger::get().println("Enabling ntp update task");
+            Logger::get().println("Enabling NTP update task");
             this->ntpUpdateTask.enable();
         } else {
-            Logger::get().println("Disabling ntp update task");
+            Logger::get().println("Disabling NTP update task");
             this->ntpUpdateTask.disable();
         }
     });
@@ -48,15 +48,17 @@ void TimeService::init(Scheduler *scheduler) {
  */
 void TimeService::ntpUpdate() {
     Logger &logger = Logger::get();
-    logger.println("Attempting NTP Update");
-    Serial.flush();
 
-    GeolocationService *geo = (GeolocationService *) ServiceRegistry::get()[GeolocationService::NAME];
-    if (geo->isLocated()) {
-        logger.printf("Configuring NTP time for timezone: %s\n", geo->getTimezone());
-        configTime(geo->getGmtOffset() * SECONDS_PER_HOUR, 0, NTP_SERVER, NTP_SERVER, NTP_SERVER);
-        timeSet = true;
-    } else {
-        logger.println("Can't set time from NTP without location");
+    if (!delayIfPaused(ntpUpdateTask)) {
+        logger.println("Attempting NTP Update");
+
+        GeolocationService *geo = (GeolocationService *) ServiceRegistry::get()[GeolocationService::NAME];
+        if (geo->isLocated()) {
+            logger.printf("Configuring NTP time for timezone: %s\n", geo->getTimezone());
+            configTime(geo->getGmtOffset() * SECONDS_PER_HOUR, 0, NTP_SERVER, NTP_SERVER, NTP_SERVER);
+            timeSet = true;
+        } else {
+            logger.println("Can't set time from NTP without location");
+        }
     }
 }

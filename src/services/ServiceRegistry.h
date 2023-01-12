@@ -63,6 +63,16 @@ public:
      */
     Service* operator[](const char *name);
 
+    /**
+     * @brief Pause any service update tasks
+     */
+    void pauseUpdates();
+
+    /**
+     * @brief Resume any service update tasks.
+     */
+    void resumeUpdates();
+
 private:
     /**
      * @brief Construct a new Services object
