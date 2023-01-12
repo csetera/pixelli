@@ -22,7 +22,8 @@ public:
         databus(new Arduino_ESP32SPI(MM_DC, MM_CS, MM_SCLK, MM_MOSI)),
         gfx(new Arduino_SSD1351(databus, MM_RST)),
         height(h),
-        width(w) {}
+        width(w),
+        firstScreenClear(true) {}
 
     void    begin(int32_t speed = GFX_NOT_DEFINED);
     void    clear(void);
@@ -38,4 +39,5 @@ private:
     uint8_t                 errorCode;
     int                     height;
     int                     width;
+    bool                    firstScreenClear;
 };

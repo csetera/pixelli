@@ -139,15 +139,6 @@ private:
     void geolocate();
 
     /**
-     * @brief Get the Update Task object
-     *
-     * @return Task*
-     */
-    virtual Task *getUpdateTask() {
-        return &geolocateTask;
-    }
-
-    /**
      * @brief Call registered callbacks to indicate a location change
      */
     void signalStateChange();

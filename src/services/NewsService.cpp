@@ -50,49 +50,51 @@ void NewsService::init(Scheduler *scheduler) {
  */
 void NewsService::newsUpdate() {
     Logger &logger = Logger::get();
-    logger.println("Attempting News Update");
-    Serial.flush();
 
-    String url(BASE_URL);
-    url += NEWS_API_KEY;
+    if (!delayIfPaused(newsUpdateTask)) {
+        logger.println("Attempting News Update");
 
-    NetworkUtils::httpGet(url, [&](int httpResponse, Stream& responseStream) {
-        if (httpResponse > 0) {
-            StaticJsonDocument<64> jsonFilter;
-            jsonFilter["articles"][0]["title"] = true;
+        String url(BASE_URL);
+        url += NEWS_API_KEY;
 
-            StaticJsonDocument<1024> jsonResponse;
-            deserializeJson(jsonResponse, responseStream, DeserializationOption::Filter(jsonFilter));
+        NetworkUtils::httpGet(url, [&](int httpResponse, Stream& responseStream) {
+            if (httpResponse > 0) {
+                StaticJsonDocument<64> jsonFilter;
+                jsonFilter["articles"][0]["title"] = true;
 
-            auto articles = jsonResponse["articles"].as<JsonArray>();
-            logger.printf("Received %d news articles\n", articles.size());
+                StaticJsonDocument<1024> jsonResponse;
+                deserializeJson(jsonResponse, responseStream, DeserializationOption::Filter(jsonFilter));
 
-            logger.println("Freeing previous articles");
-            if (articleCount > 0) {
-                for (int i = 0; i < articleCount; i++) {
-                    logger.printf("Freeing article: %s\n", titles[i]->c_str());
-                    delete titles[i];
+                auto articles = jsonResponse["articles"].as<JsonArray>();
+                logger.printf("Received %d news articles\n", articles.size());
+
+                logger.println("Freeing previous articles");
+                if (articleCount > 0) {
+                    for (int i = 0; i < articleCount; i++) {
+                        logger.printf("Freeing article: %s\n", titles[i]->c_str());
+                        delete titles[i];
+                    }
+
+                    articleCount = 0;
                 }
 
-                articleCount = 0;
+                articleCount = articles.size() > MAX_TITLES ? MAX_TITLES : articles.size();
+                for (int i = 0; i < articleCount; i++) {
+                    titles[i] = new String((String) articles[i]["title"].as<String>());
+
+                    // Trim the news source from the article title
+                    titles[i]->remove(titles[i]->lastIndexOf('-'));
+                    titles[i]->trim();
+                    titles[i]->toUpperCase(); // Avoid descenders
+
+                    // logger.printf("Received article[%d] = [%p] %s\n", i, titles[i], titles[i]->c_str());
+                }
+
+            } else {
+                logger.printf("News update failed with code: %d\n", httpResponse);
             }
-
-            articleCount = articles.size() > MAX_TITLES ? MAX_TITLES : articles.size();
-            for (int i = 0; i < articleCount; i++) {
-                titles[i] = new String((String) articles[i]["title"].as<String>());
-
-                // Trim the news source from the article title
-                titles[i]->remove(titles[i]->lastIndexOf('-'));
-                titles[i]->trim();
-                titles[i]->toUpperCase(); // Avoid descenders
-
-                logger.printf("Received article[%d] = [%p] %s\n", i, titles[i], titles[i]->c_str());
-            }
-
-        } else {
-            logger.printf("News update failed with code: %d\n", httpResponse);
-        }
-    });
+        });
+    }
 }
 
 /**

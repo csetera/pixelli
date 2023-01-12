@@ -6,6 +6,9 @@
  * You can obtain one at https://mozilla.org/MPL/2.0/.
  **********************************************************************************/
 #include "Service.h"
+#include <logging/Logger.h>
+
+const unsigned long PAUSE_UPDATES_DELAY = TASK_SECOND * 5;
 
 /**
  * @brief Initialize the service, registering Task's as necessary.
@@ -14,6 +17,25 @@
  */
 void Service::init(Scheduler *scheduler) {
    this->scheduler = scheduler;
+}
+
+
+/**
+ * @brief Delay the specified task if updates are currently paused.  Returns
+ * a boolean indicating whether the task was delayed.
+ *
+ * @param task
+ * @return true
+ * @return false
+ */
+bool Service::delayIfPaused(Task &task) {
+    if (updatesPaused) {
+        Logger::get().printf("Delaying paused updates for %s\n", name());
+        task.delay(PAUSE_UPDATES_DELAY);
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -26,23 +48,16 @@ bool Service::isWifiConnected() {
     return WiFi.status() == WL_CONNECTED;
 }
 
-
 /**
  * @brief Pause any service update tasks
  */
 void Service::pauseUpdates() {
-    Task *task = getUpdateTask();
-    if (!paused && (task != nullptr)) {
-        paused = task->disable();
-    }
+    updatesPaused = true;
 }
 
 /**
  * @brief Resume any service update tasks.
  */
 void Service::resumeUpdates() {
-    Task *task = getUpdateTask();
-    if (paused && (task != nullptr)) {
-        paused = !task->enableDelayed();
-    }
+    updatesPaused = false;
 }

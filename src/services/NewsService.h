@@ -82,13 +82,4 @@ private:
 
     String *titles[MAX_TITLES];
     uint8_t articleCount;
-
-    /**
-     * @brief Get the Update Task object
-     *
-     * @return Task*
-     */
-    virtual Task *getUpdateTask() {
-        return &newsUpdateTask;
-    }
 };
