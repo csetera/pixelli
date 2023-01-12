@@ -26,7 +26,12 @@ void OLED_NeoMatrix::drawPixel(int16_t x, int16_t y, uint16_t color) {
 }
 
 void OLED_NeoMatrix::fillScreen(uint16_t color) {
-    gfx->fillRect(0, 0, width * 4, height * 4, color);
+    if (firstScreenClear) {
+        gfx->fillScreen(0);
+        firstScreenClear = false;
+    } else {
+        gfx->fillRect(0, 0, width * 4, height * 4, color);
+    }
 }
 
 bool OLED_NeoMatrix::inBounds(int16_t x, int16_t y) {

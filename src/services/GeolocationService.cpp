@@ -17,33 +17,36 @@
  */
 void GeolocationService::geolocate() {
     Logger &logger = Logger::get();
-    logger.println("Making Geolocation call");
 
-    String url(BASE_URL);
-    url += ABSTRACT_API_KEY;
+    if (!delayIfPaused(geolocateTask)) {
+        logger.println("Making Geolocation call");
 
-    NetworkUtils::httpGet(url, [&](int httpResponse, Stream& responseStream) {
-        if (httpResponse > 0) {
-            StaticJsonDocument<64> jsonFilter;
-            jsonFilter["postal_code"] = true;
-            jsonFilter["timezone"]["abbreviation"] = true;
-            jsonFilter["timezone"]["gmt_offset"] = true;
+        String url(BASE_URL);
+        url += ABSTRACT_API_KEY;
 
-            StaticJsonDocument<128> jsonResponse;
-            deserializeJson(jsonResponse, responseStream, DeserializationOption::Filter(jsonFilter));
+        NetworkUtils::httpGet(url, [&](int httpResponse, Stream& responseStream) {
+            if (httpResponse > 0) {
+                StaticJsonDocument<64> jsonFilter;
+                jsonFilter["postal_code"] = true;
+                jsonFilter["timezone"]["abbreviation"] = true;
+                jsonFilter["timezone"]["gmt_offset"] = true;
 
-            gmtOffset = jsonResponse["timezone"]["gmt_offset"];
-            strncpy(timezone, jsonResponse["timezone"]["abbreviation"], TIMEZONE_LENGTH);
-            strncpy(zipcode, jsonResponse["postal_code"], ZIPCODE_LENGTH);
+                StaticJsonDocument<128> jsonResponse;
+                deserializeJson(jsonResponse, responseStream, DeserializationOption::Filter(jsonFilter));
 
-            located = true;
-            this->geolocateTask.disable();
-            this->signalStateChange();
+                gmtOffset = jsonResponse["timezone"]["gmt_offset"];
+                strncpy(timezone, jsonResponse["timezone"]["abbreviation"], TIMEZONE_LENGTH);
+                strncpy(zipcode, jsonResponse["postal_code"], ZIPCODE_LENGTH);
 
-        } else {
-            Logger::get().printf("Geolocation failed with code: %d\n", httpResponse);
-        }
-    });
+                located = true;
+                this->geolocateTask.disable();
+                this->signalStateChange();
+
+            } else {
+                Logger::get().printf("Geolocation failed with code: %d\n", httpResponse);
+            }
+        });
+    }
 }
 
 /**

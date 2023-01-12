@@ -19,7 +19,7 @@ public:
     /**
      * @brief Construct a new Service object
      */
-    Service() {}
+    Service(): updatesPaused(false) {}
 
     // Disable copy semantics
     Service(const Service&) = delete;
@@ -53,8 +53,29 @@ public:
         // Do nothing by default
     }
 
+    /**
+     * @brief Pause any service update tasks
+     */
+    virtual void pauseUpdates();
+
+    /**
+     * @brief Resume any service update tasks.
+     */
+    virtual void resumeUpdates();
+
 protected:
+    bool updatesPaused;
     Scheduler *scheduler;
+
+    /**
+     * @brief Delay the specified task if updates are currently paused.  Returns
+     * a boolean indicating whether the task was delayed.
+     *
+     * @param task
+     * @return true
+     * @return false
+     */
+    virtual bool delayIfPaused(Task &task);
 
     /**
      * @brief Return a boolean indicating whether wifi is currently connected.
