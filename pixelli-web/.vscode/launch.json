@@ -5,11 +5,25 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Launch Vite DEV server",
+        "name": "Remote API Vite",
         "request": "launch",
-        "runtimeExecutable": "npx",
+        "runtimeExecutable": "yarn",
         "runtimeArgs": [
-          "vite",
+          "dev",
+        ],
+        "type": "node",
+        "serverReadyAction": {
+          "action": "debugWithChrome",
+          "pattern": ".*Local.+:([0-9]+)\/",
+          "uriFormat": "http://localhost:%s"
+        }
+      },
+      {
+        "name": "Local API Vite",
+        "request": "launch",
+        "runtimeExecutable": "yarn",
+        "runtimeArgs": [
+          "localapi",
         ],
         "type": "node",
         "serverReadyAction": {

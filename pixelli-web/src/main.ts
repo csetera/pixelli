@@ -6,17 +6,11 @@
  # You can obtain one at https://mozilla.org/MPL/2.0/.
  #*********************************************************************************/
 
-// Components
 import App from './App.vue'
-
-// Composables
 import { createApp } from 'vue'
-
-// Plugins
 import { registerPlugins } from '@/plugins'
 
 const app = createApp(App)
-
 registerPlugins(app)
 
 app.mount('#app')

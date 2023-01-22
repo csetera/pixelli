@@ -31,7 +31,7 @@ const routes = [
         // route level code-splitting
         // this generates a separate chunk (about.[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        component: () => import(/* webpackChunkName: "home" */ '@/views/Home.vue'),
+        component: () => import('@/views/Home.vue'),
       },
       {
         path: 'info',
@@ -40,7 +40,7 @@ const routes = [
           icon: "mdi-information-outline"
         },
         // route level code-splitting
-        component: () => import(/* webpackChunkName: "home" */ '@/views/Info.vue'),
+        component: () => import('@/views/Info.vue'),
       },
       {
         path: 'settings',
@@ -49,7 +49,7 @@ const routes = [
           icon: "mdi-cog-outline"
         },
         // route level code-splitting
-        component: () => import(/* webpackChunkName: "home" */ '@/views/Settings.vue'),
+        component: () => import('@/views/Settings.vue'),
       },
     ],
   },

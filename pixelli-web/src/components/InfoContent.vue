@@ -6,9 +6,20 @@
 # You can obtain one at https://mozilla.org/MPL/2.0/.
 #********************************************************************************  -->
 <template>
-  <info-content />
+  <v-container class="fill-height">
+    {{  info  }}
+  </v-container>
 </template>
 
 <script lang="ts" setup>
-  import InfoContent from '@/components/InfoContent.vue';
+  import { useDeviceStore } from '@/store/device';
+  import { storeToRefs } from "pinia";
+  import { onMounted } from 'vue'
+
+  const store = useDeviceStore();
+  const { info } = storeToRefs(store);
+
+  onMounted(() => {
+    store.loadInfo();
+  })
 </script>

@@ -51,6 +51,11 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
+"@howiefh/ant-path-matcher@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@howiefh/ant-path-matcher/-/ant-path-matcher-0.0.4.tgz#ddace506aa7f5bd2c81e54c03e74a63161b693ec"
+  integrity sha512-283cW09cKcrBy7TFMo4JgZoM+jBZIlqUMCtU7TDlZG+F+vgzpP3+/ZK0PrvZKluv02U906cqgufFn5fj6xJafA==
+
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.8.tgz#03595ac2075a4dc0f191cc2131de14fbd7d410b9"
@@ -1102,6 +1107,11 @@ locate-path@^6.0.0:
   dependencies:
     p-locate "^5.0.0"
 
+lodash.get@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
+  integrity sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==
+
 lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
@@ -1534,6 +1544,14 @@ util-deprecate@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
+
+vite-plugin-simple-json-server@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/vite-plugin-simple-json-server/-/vite-plugin-simple-json-server-0.6.1.tgz#780010b540a1c1f93027ebd6fd092f6f21f67944"
+  integrity sha512-medqZv8oHQuQFycN5BxDfh313Ub8A6CgUVQBKU0xqGtokWR0O4GVZASfahbhHLpTdeBntT9gyEGUPOaHhMz+sQ==
+  dependencies:
+    "@howiefh/ant-path-matcher" "^0.0.4"
+    lodash.get "^4.4.2"
 
 vite-plugin-vuetify@^1.0.0-alpha.12:
   version "1.0.1"

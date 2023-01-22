@@ -1,0 +1,30 @@
+{
+    "Build": "2023-01-12T16:52:32Z",
+    "IpAddr": "192.168.0.143",
+    "SdkVersion": "v4.4.3",
+    "sketch": {
+        "Size": 1140112,
+        "FreeSpace": 1507328
+    },
+    "Heap": {
+        "Size": 295748,
+        "Free": 188412,
+        "MinFree": 119076,
+        "MaxAlloc": 110580
+    },
+    "Psram": {
+        "Size": 0,
+        "Free": 0,
+        "MinFree": 0,
+        "MaxAlloc": 0
+    },
+    "Chip": {
+        "Model": "ESP32-D0WDQ6",
+        "Revision": 1,
+        "Cores": 2
+    },
+    "Flash": {
+        "ChipSpeed": 40000000,
+        "ChipMode": 2
+    }
+}
