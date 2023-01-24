@@ -7,19 +7,28 @@
 #********************************************************************************  -->
 <template>
   <v-container class="fill-height">
-    {{  info  }}
+    <template v-if="task.isRunning">
+      <v-progress-circular indeterminate />
+    </template>
+    <template v-else-if="task.isError">
+      <v-alert text="Something went wrong"></v-alert>
+    </template>
+    <template v-else>
+      {{  task.last?.value  }}
+    </template>
   </v-container>
 </template>
 
 <script lang="ts" setup>
-  import { useDeviceStore } from '@/store/device';
-  import { storeToRefs } from "pinia";
-  import { onMounted } from 'vue'
+  import { DeviceInfo } from '@/models/DeviceInfo';
+  import { useTask } from 'vue-concurrency';
 
-  const store = useDeviceStore();
-  const { info } = storeToRefs(store);
+  const url = `${import.meta.env.VITE_API_BASE}/info`;
+  const task = useTask(function*() {
+    const response = yield fetch(url);
+    return response.json() as DeviceInfo;
+  });
 
-  onMounted(() => {
-    store.loadInfo();
-  })
+  task.perform();
+
 </script>

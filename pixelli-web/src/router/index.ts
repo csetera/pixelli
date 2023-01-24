@@ -7,6 +7,8 @@
  #*********************************************************************************/
 import 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
+import Info from '@/views/Info.vue';
+import Settings from '@/views/Settings.vue';
 
 // Add some structure to the route metadata
 // The navigation drawer is driven by the router
@@ -39,8 +41,7 @@ const routes = [
         meta: {
           icon: "mdi-information-outline"
         },
-        // route level code-splitting
-        component: () => import('@/views/Info.vue'),
+        component: Info,
       },
       {
         path: 'settings',
@@ -48,8 +49,7 @@ const routes = [
         meta: {
           icon: "mdi-cog-outline"
         },
-        // route level code-splitting
-        component: () => import('@/views/Settings.vue'),
+        component: Settings
       },
     ],
   },
