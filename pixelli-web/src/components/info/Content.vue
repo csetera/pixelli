@@ -5,25 +5,20 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at https://mozilla.org/MPL/2.0/.
 #********************************************************************************  -->
+
 <template>
-  <AsyncContent :task="task" v-slot="{ lastValue }">
-    <Content v-if="lastValue" :info="lastValue" />
-  </AsyncContent>
+  <v-card title="Device Info">
+    <template v-slot:text>
+        {{ info }}
+    </template>
+  </v-card>
 </template>
 
 <script lang="ts" setup>
-  import AsyncContent from '@/components/utility/AsyncContent.vue';
-  import Content from '@/components/info/Content.vue';
-
+  import { defineProps } from "vue";
   import { DeviceInfo } from '@/models/DeviceInfo';
-  import { useTask } from 'vue-concurrency';
 
-  const url = `${import.meta.env.VITE_API_BASE}/info`;
-  const task = useTask(function*() {
-    const response = yield fetch(url);
-    return response.json() as DeviceInfo;
-  });
-
-  task.perform();
-
+  const props = defineProps<{
+    info: DeviceInfo
+  }>()
 </script>
