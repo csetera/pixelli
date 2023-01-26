@@ -101,6 +101,10 @@ The `platformio.ini` file provides multiple build environments for use, dependin
 * esp32_mock_matrix_serial <br/> Targets an OLED "mock" matrix driven by an ESP32 to use for testing purposes.  Uploads and logging occur over serial port.
 * esp32_mock_matrix_ota <br/> Targets an OLED "mock" matrix driven by an ESP32 to use for testing purposes.  Uploads and logging occur over the air.
 
+### Web Application
+
+The [Vue.js](https://vuejs.org/) web application for use in controlling Pixelli can be found in the [pixelli-web](pixelli-web/README.md) folder.
+
 ## Additional Notes
 
 ### Software Design

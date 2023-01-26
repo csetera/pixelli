@@ -9,44 +9,48 @@
 //
 // Typescript interfaces for API "info" response
 //
-export interface Sketch {
+export interface GeneralInfo {
+  Build: Date;
+  IpAddr: string;
+  SdkVersion: string;
+}
+
+export interface SketchInfo {
     Size: number;
     FreeSpace: number;
 }
 
-export interface Heap {
+export interface HeapInfo {
     Size: number;
     Free: number;
     MinFree: number;
     MaxAlloc: number;
 }
 
-export interface Psram {
+export interface PsramInfo {
     Size: number;
     Free: number;
     MinFree: number;
     MaxAlloc: number;
 }
 
-export interface Chip {
+export interface ChipInfo {
     Model: string;
     Revision: number;
     Cores: number;
 }
 
-export interface Flash {
+export interface FlashInfo {
     ChipSpeed: number;
     ChipMode: number;
 }
 
 export interface DeviceInfo {
-    Build: Date;
-    IpAddr: string;
-    SdkVersion: string;
-    sketch: Sketch;
-    Heap: Heap;
-    Psram: Psram;
-    Chip: Chip;
-    Flash: Flash;
+    General: GeneralInfo;
+    Sketch: SketchInfo;
+    Heap: HeapInfo;
+    Psram: PsramInfo;
+    Chip: ChipInfo;
+    Flash: FlashInfo;
 }
 

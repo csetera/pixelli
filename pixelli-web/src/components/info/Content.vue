@@ -7,16 +7,17 @@
 #********************************************************************************  -->
 
 <template>
-  <v-card title="Device Info">
-    <template v-slot:text>
-        {{ info }}
-    </template>
-  </v-card>
+  <info-block title="General" :values="props.info.General" />
+  <info-block title="Chip" :values="props.info.Chip" />
+  <info-block title="Sketch" :values="props.info.Sketch" />
+  <info-block title="Heap" :values="props.info.Heap" />
+  <info-block title="Flash" :values="props.info.Flash" />
+  <info-block title="Pseudo Static RAM" :values="props.info.Psram" />
 </template>
 
 <script lang="ts" setup>
-  import { defineProps } from "vue";
   import { DeviceInfo } from '@/models/DeviceInfo';
+  import InfoBlock from './InfoBlock.vue';
 
   const props = defineProps<{
     info: DeviceInfo

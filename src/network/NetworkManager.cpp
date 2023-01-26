@@ -178,18 +178,19 @@ void NetworkManager::loop() {
 void handleInfoRequest(AsyncWebServerRequest *request) {
     Logger::get().println("Received info request");
 
+    char build_timestamp[FORMATTED_BUILD_TIMESTAMP_LENGTH];
+    Utils::formatBuildTimestamp(build_timestamp);
+
     AsyncJsonResponse *response = new AsyncJsonResponse();
     JsonVariant &root = response->getRoot();
     JsonObject obj = root.to<JsonObject>();
 
-    char build_timestamp[FORMATTED_BUILD_TIMESTAMP_LENGTH];
-    Utils::formatBuildTimestamp(build_timestamp);
-    obj[F("Build")] = build_timestamp;
+    JsonObject general = obj.createNestedObject("General");
+    general[F("Build")] = build_timestamp;
+    general["IpAddr"] = WiFi.localIP();
+    general["SdkVersion"] = ESP.getSdkVersion();
 
-    obj["IpAddr"] = WiFi.localIP();
-    obj["SdkVersion"] = ESP.getSdkVersion();
-
-    JsonObject sketch = obj.createNestedObject("sketch");
+    JsonObject sketch = obj.createNestedObject("Sketch");
     sketch["Size"] = ESP.getSketchSize();
     sketch["FreeSpace"] = ESP.getFreeSketchSpace();
 

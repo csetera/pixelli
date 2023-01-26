@@ -1,8 +1,10 @@
 {
-    "Build": "2023-01-12T16:52:32Z",
-    "IpAddr": "192.168.0.143",
-    "SdkVersion": "v4.4.3",
-    "sketch": {
+    "General": {
+        "Build": "2023-01-12T16:52:32Z",
+        "IpAddr": "192.168.0.143",
+        "SdkVersion": "v4.4.3"
+    },
+    "Sketch": {
         "Size": 1140112,
         "FreeSpace": 1507328
     },
