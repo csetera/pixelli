@@ -26,18 +26,6 @@
 #include "NetworkManager.h"
 
 /**
- * @brief Handle template variable expansion for the captive portal.
- *
- * @param var The variable to be replaced.
- * @return String
- */
-String captivePortalProcessor(const String &var) {
-    if (var == "HELLO_FROM_TEMPLATE")
-        return F("Hello world!");
-    return String();
-}
-
-/**
  * @brief Incoming websocket event handler
  *
  * @param server
@@ -313,6 +301,7 @@ void NetworkManager::registerHandlers() {
     webServer.on("/api/networks", handleNetworksRequest);
 
     // Web application serving
+    webServer.rewrite("/", "/index.html");
     webServer.rewrite("/index.htm", "/index.html");
     webServer.serveStatic("/", LittleFS, "/webapp/");
 

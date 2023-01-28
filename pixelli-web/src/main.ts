@@ -11,6 +11,11 @@ import { createApp } from 'vue'
 import { registerPlugins } from '@/plugins'
 
 const app = createApp(App)
+
+app.config.errorHandler = (err, instance, info) => {
+  console.error(err, instance, info);
+}
+
 registerPlugins(app)
 
 app.mount('#app')

@@ -7,11 +7,12 @@
  #*********************************************************************************/
 import 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
-import { isNavigationFailure, NavigationFailureType } from 'vue-router'
+import { isNavigationFailure } from 'vue-router'
 import DefaultLayout from '@/layouts/default/Default.vue';
 import Home from '@/views/Home.vue';
 import Info from '@/views/Info.vue';
 import Settings from '@/views/Settings.vue';
+import NotFound from '@/components/utility/NotFound.vue';
 
 // Add some structure to the route metadata
 // The navigation drawer is driven by the router
@@ -30,39 +31,45 @@ const routes = [
       {
         path: '',
         name: 'Home',
+        component: Home,
         meta: {
           icon: "mdi-home-outline"
         },
-        component: Home
       },
       {
         path: 'info',
         name: 'Information',
+        component: Info,
         meta: {
           icon: "mdi-information-outline"
         },
-        component: Info,
       },
       {
         path: 'settings',
         name: 'Settings',
+        component: Settings,
         meta: {
           icon: "mdi-cog-outline"
         },
-        component: Settings
       },
     ],
   },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: NotFound
+  }
 ]
 
-console.log("Router index: ", process.env.BASE_URL);
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 })
 
+//
+// Capture and log navigation failures
+//
 router.afterEach((to, from, failure) => {
-  // Any kind of navigation failure
   if (isNavigationFailure(failure)) {
     console.log("Navigation failure", to, from, failure);
   }
