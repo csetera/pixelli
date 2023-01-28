@@ -50,3 +50,4 @@ See [Configuration Reference](https://vitejs.dev/config/).
 [vite-plugin-simple-json-server](https://socket.dev/npm/package/vite-plugin-simple-json-server)
 [Vuetify](https://next.vuetifyjs.com/en/)
 [vue-concurrency](https://vue-concurrency.netlify.app/)
+[Vue Router](https://router.vuejs.org/)

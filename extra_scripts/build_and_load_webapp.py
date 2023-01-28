@@ -8,6 +8,9 @@
 
 #
 # PlatformIO custom target to build the web application
+# and copy it into the "data/webapp" folder where it can
+# be built into a file system image and uploaded to the
+# device.
 #
 import os
 import shutil
@@ -28,7 +31,7 @@ def webapp_copy_ignores(path, names):
     return [name for name in names if not is_included_in_path(path, name)]
 
 def build_webapp(*args, **kwargs):
-    data_dir =  os.path.sep.join([ env['PROJECT_DIR'], "data" ])
+    data_dir =  os.path.sep.join([ env['PROJECT_DIR'], "data", "webapp" ])
     webapp_dir = os.path.sep.join([ env['PROJECT_DIR'], "pixelli-web" ])
     webapp_dist_dir = os.path.sep.join([webapp_dir, "dist"])
 

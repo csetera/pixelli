@@ -7,6 +7,9 @@
  #*********************************************************************************/
 import 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
+import { isNavigationFailure, NavigationFailureType } from 'vue-router'
+import DefaultLayout from '@/layouts/default/Default.vue';
+import Home from '@/views/Home.vue';
 import Info from '@/views/Info.vue';
 import Settings from '@/views/Settings.vue';
 
@@ -22,7 +25,7 @@ declare module 'vue-router' {
 const routes = [
   {
     path: '/',
-    component: () => import('@/layouts/default/Default.vue'),
+    component: DefaultLayout,
     children: [
       {
         path: '',
@@ -30,10 +33,7 @@ const routes = [
         meta: {
           icon: "mdi-home-outline"
         },
-        // route level code-splitting
-        // this generates a separate chunk (about.[hash].js) for this route
-        // which is lazy-loaded when the route is visited.
-        component: () => import('@/views/Home.vue'),
+        component: Home
       },
       {
         path: 'info',
@@ -55,9 +55,17 @@ const routes = [
   },
 ]
 
+console.log("Router index: ", process.env.BASE_URL);
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 })
+
+router.afterEach((to, from, failure) => {
+  // Any kind of navigation failure
+  if (isNavigationFailure(failure)) {
+    console.log("Navigation failure", to, from, failure);
+  }
+});
 
 export default router

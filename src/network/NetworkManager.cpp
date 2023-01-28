@@ -9,7 +9,7 @@
 #include <ArduinoOTA.h>
 #include <AsyncJson.h>
 #include <ESPmDNS.h>
-#include <SPIFFS.h>
+#include <LittleFS.h>
 
 #include <defaults.h>
 #include <logging/Logger.h>
@@ -308,25 +308,13 @@ void NetworkManager::onWifiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
 void NetworkManager::registerHandlers() {
     Serial.println("Registering web handlers");
 
+    // API endpoints
     webServer.on("/api/info", handleInfoRequest);
     webServer.on("/api/networks", handleNetworksRequest);
 
-    webServer.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
-        Serial.println("Root webrequest");
-
-        const char *filename = ON_AP_FILTER(request) ? "/captive_index.html" : "/index.html";
-        request->send(SPIFFS, filename);
-    });
-
-    webServer.onNotFound([this](AsyncWebServerRequest *request) {
-        Serial.println("Not found webrequest");
-        if (ON_AP_FILTER(request)) {
-            request->send(SPIFFS, "/captive_index.html");
-        } else {
-            // Otherwise, just 404
-            request->send(404, "text/plain", "Not found");
-        }
-    });
+    // Web application serving
+    webServer.rewrite("/index.htm", "/index.html");
+    webServer.serveStatic("/", LittleFS, "/webapp/");
 
     wsSerial.onEvent(onWsEvent);
     webServer.addHandler(&wsSerial);
