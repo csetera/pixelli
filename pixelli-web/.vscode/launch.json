@@ -1,0 +1,50 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "JSON Serve",
+        "request": "launch",
+        "runtimeExecutable": "yarn",
+        "runtimeArgs": [
+          "api-json-serve",
+        ],
+        "type": "node",
+        "serverReadyAction": {
+          "action": "debugWithChrome",
+          "pattern": ".*Local.+:([0-9]+)\/",
+          "uriFormat": "http://localhost:%s"
+        }
+      },
+      {
+        "name": "Pixelli",
+        "request": "launch",
+        "runtimeExecutable": "yarn",
+        "runtimeArgs": [
+          "api-pixelli",
+        ],
+        "type": "node",
+        "serverReadyAction": {
+          "action": "debugWithChrome",
+          "pattern": ".*Local.+:([0-9]+)\/",
+          "uriFormat": "http://localhost:%s"
+        }
+      },
+      {
+        "name": "Mock Pixelli",
+        "request": "launch",
+        "runtimeExecutable": "yarn",
+        "runtimeArgs": [
+          "api-pixelli_mock",
+        ],
+        "type": "node",
+        "serverReadyAction": {
+          "action": "debugWithChrome",
+          "pattern": ".*Local.+:([0-9]+)\/",
+          "uriFormat": "http://localhost:%s"
+        }
+      },
+    ],
+  }
