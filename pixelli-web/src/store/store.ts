@@ -6,24 +6,14 @@
  # You can obtain one at https://mozilla.org/MPL/2.0/.
  #*********************************************************************************/
 import { defineStore } from 'pinia'
-import { DeviceInfo } from '@/models/DeviceInfo';
 
-interface DeviceStoreStructure {
-  info?: DeviceInfo
+interface StoreStructure {
 }
 
-export const useDeviceStore = defineStore('device', {
+export const useStore = defineStore('store', {
   state: () => ({
-    info: undefined
-  } as DeviceStoreStructure),
+  } as StoreStructure),
 
   actions: {
-    /**
-     * Load the information from the device API
-     */
-    async loadInfo() {
-      const result = await fetch(`${import.meta.env.VITE_API_BASE}/info`);
-      this.info = await result.json();
-    },
   },
 })
