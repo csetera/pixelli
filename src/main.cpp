@@ -18,7 +18,7 @@
 #endif
 
 #include <SPI.h>
-#include <SPIFFS.h>
+#include <LittleFS.h>
 #include <TaskScheduler.h>
 #include <Wire.h>
 
@@ -49,8 +49,8 @@ void setup() {
     Utils::formatBuildTimestamp(build_timestamp);
     Serial.printf("Starting version built: %s\n", build_timestamp);
 
-    if (!SPIFFS.begin(true)) {
-        Serial.println("An Error has occurred while mounting SPIFFS");
+    if (!LittleFS.begin(true)) {
+        Serial.println("An Error has occurred while mounting LittleFS");
         return;
     }
 
