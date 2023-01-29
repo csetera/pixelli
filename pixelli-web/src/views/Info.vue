@@ -18,7 +18,10 @@
   import { DeviceInfo } from '@/models/DeviceInfo';
   import { useTask } from 'vue-concurrency';
 
-  const url = `${import.meta.env.VITE_API_BASE}/info`;
+  const url = import.meta.env.VITE_API_BASE ?
+    `${import.meta.env.VITE_API_BASE}/api/info` :
+    '/api/info';
+
   const task = useTask(function*() {
     const response = yield fetch(url);
     return response.json() as DeviceInfo;

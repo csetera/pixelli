@@ -26,6 +26,43 @@
 #include "NetworkManager.h"
 
 /**
+ * @brief Add CORS headers to the specified response.
+ *
+ * @param request
+ * @param response
+ */
+void addCorsHeaders(AsyncWebServerRequest *request, AsyncWebServerResponse *response) {
+    if (request->hasHeader("Origin")) {
+        auto origin = request->getHeader("Origin");
+        response->addHeader("Access-Control-Allow-Origin", origin->value());
+    } else {
+        response->addHeader("Access-Control-Allow-Origin", "*");
+    }
+
+    response->addHeader("Access-Control-Allow-Credentials", "true");
+    response->addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+    response->addHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+    response->addHeader("Access-Control-Max-Age", "86400");
+    response->addHeader("Vary", "Accept-Encoding, Origin");
+}
+
+/**
+ * @brief A AsyncWebHandler implementation that handles CORS preflight
+ * requests.
+ */
+class CORSPreflightHandler : public AsyncWebHandler {
+    virtual bool canHandle(AsyncWebServerRequest *request) {
+        return (request->method() == HTTP_OPTIONS) && request->url().startsWith("/api");
+    }
+
+    virtual void handleRequest(AsyncWebServerRequest *request) {
+        AsyncWebServerResponse *response = request->beginResponse(204, "text/plain", "");
+        addCorsHeaders(request, response);
+        request->send(response);
+    }
+} corsPreflightHandler;
+
+/**
  * @brief Incoming websocket event handler
  *
  * @param server
@@ -170,11 +207,13 @@ void handleInfoRequest(AsyncWebServerRequest *request) {
     Utils::formatBuildTimestamp(build_timestamp);
 
     AsyncJsonResponse *response = new AsyncJsonResponse();
+    addCorsHeaders(request, response);
+
     JsonVariant &root = response->getRoot();
     JsonObject obj = root.to<JsonObject>();
 
     JsonObject general = obj.createNestedObject("General");
-    general[F("Build")] = build_timestamp;
+    general["Build"] = build_timestamp;
     general["IpAddr"] = WiFi.localIP();
     general["SdkVersion"] = ESP.getSdkVersion();
 
@@ -218,6 +257,8 @@ void handleNetworksRequest(AsyncWebServerRequest *request) {
     int n = WiFi.scanNetworks();
 
     AsyncJsonResponse *response = new AsyncJsonResponse();
+    addCorsHeaders(request, response);
+
     JsonVariant &root = response->getRoot();
     JsonArray array = root.to<JsonArray>();
 
@@ -297,6 +338,7 @@ void NetworkManager::registerHandlers() {
     Serial.println("Registering web handlers");
 
     // API endpoints
+    webServer.addHandler(&corsPreflightHandler);
     webServer.on("/api/info", handleInfoRequest);
     webServer.on("/api/networks", handleNetworksRequest);
 
@@ -305,15 +347,21 @@ void NetworkManager::registerHandlers() {
     webServer.rewrite("/index.htm", "/index.html");
     webServer.serveStatic("/", LittleFS, "/webapp/");
 
+    // Serial over Websocket handling
     wsSerial.onEvent(onWsEvent);
     webServer.addHandler(&wsSerial);
+
+    // Catch all
+    webServer.onNotFound([](AsyncWebServerRequest *request){
+        request->send(404);
+    });
 }
 
 /**
  * @brief Setup for OTA updates
  */
 void NetworkManager::configureOTAUpdates() {
-    Logger::get().println(F("Configuring OTA Updates"));
+    Logger::get().println("Configuring OTA Updates");
 
     ArduinoOTA.setHostname(MDNS_NAME);
     ArduinoOTA.setPassword(OTA_PASSWORD);
@@ -321,12 +369,12 @@ void NetworkManager::configureOTAUpdates() {
     ArduinoOTA.onStart([this]() {
         lastLoggedOtaPercentage = -1.0;
         Logger::get().println((ArduinoOTA.getCommand() == 0) ?
-            F("OTA firmware update starting") :
-            F("OTA filesystem update starting"));
+            "OTA firmware update starting" :
+            "OTA filesystem update starting");
     });
 
     ArduinoOTA.onEnd([]() {
-        Logger::get().println(F("OTA Complete"));
+        Logger::get().println("OTA Complete");
     });
 
     ArduinoOTA.onProgress([this](unsigned int progress, unsigned int total) {
@@ -342,23 +390,23 @@ void NetworkManager::configureOTAUpdates() {
     ArduinoOTA.onError([](ota_error_t error) {
         switch (error) {
             case OTA_AUTH_ERROR:
-                Logger::get().println(F("OTA - Auth failed\n"));
+                Logger::get().println("OTA - Auth failed\n");
                 break;
 
             case OTA_BEGIN_ERROR:
-                Logger::get().println(F("OTA - Begin failed"));
+                Logger::get().println("OTA - Begin failed");
                 break;
 
             case OTA_CONNECT_ERROR:
-                Logger::get().println(F("OTA - Connect failed"));
+                Logger::get().println("OTA - Connect failed");
                 break;
 
             case OTA_RECEIVE_ERROR:
-                Logger::get().println(F("OTA - Receive failed"));
+                Logger::get().println("OTA - Receive failed");
                 break;
 
             case OTA_END_ERROR:
-                Logger::get().println(F("OTA - End failed"));
+                Logger::get().println("OTA - End failed");
                 break;
 
             default:
@@ -366,5 +414,5 @@ void NetworkManager::configureOTAUpdates() {
         }
     });
 
-    Logger::get().println(F("OTA configured"));
+    Logger::get().println("OTA configured");
 }

@@ -19,7 +19,8 @@ import NotFound from '@/components/utility/NotFound.vue';
 // routes
 declare module 'vue-router' {
   interface RouteMeta {
-    icon?: string
+    icon?: string,
+    navigable: boolean,
   }
 }
 
@@ -33,7 +34,8 @@ const routes = [
         name: 'Home',
         component: Home,
         meta: {
-          icon: "mdi-home-outline"
+          icon: "mdi-home-outline",
+          navigable: true
         },
       },
       {
@@ -41,7 +43,8 @@ const routes = [
         name: 'Information',
         component: Info,
         meta: {
-          icon: "mdi-information-outline"
+          icon: "mdi-information-outline",
+          navigable: true
         },
       },
       {
@@ -49,7 +52,8 @@ const routes = [
         name: 'Settings',
         component: Settings,
         meta: {
-          icon: "mdi-cog-outline"
+          icon: "mdi-cog-outline",
+          navigable: false
         },
       },
     ],
@@ -57,7 +61,10 @@ const routes = [
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
-    component: NotFound
+    component: NotFound,
+    meta: {
+      navigable: false
+    }
   }
 ]
 

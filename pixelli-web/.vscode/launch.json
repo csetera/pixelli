@@ -5,11 +5,11 @@
     "version": "0.2.0",
     "configurations": [
       {
-        "name": "Remote API Vite",
+        "name": "JSON Serve",
         "request": "launch",
         "runtimeExecutable": "yarn",
         "runtimeArgs": [
-          "dev",
+          "api-json-serve",
         ],
         "type": "node",
         "serverReadyAction": {
@@ -19,11 +19,25 @@
         }
       },
       {
-        "name": "Local API Vite",
+        "name": "Pixelli",
         "request": "launch",
         "runtimeExecutable": "yarn",
         "runtimeArgs": [
-          "localapi",
+          "api-pixelli",
+        ],
+        "type": "node",
+        "serverReadyAction": {
+          "action": "debugWithChrome",
+          "pattern": ".*Local.+:([0-9]+)\/",
+          "uriFormat": "http://localhost:%s"
+        }
+      },
+      {
+        "name": "Mock Pixelli",
+        "request": "launch",
+        "runtimeExecutable": "yarn",
+        "runtimeArgs": [
+          "api-pixelli_mock",
         ],
         "type": "node",
         "serverReadyAction": {

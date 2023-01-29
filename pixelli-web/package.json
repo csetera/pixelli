@@ -9,7 +9,9 @@
   "private": true,
   "scripts": {
     "dev": "vite",
-    "localapi": "vite --mode localapi",
+    "api-json-serve": "vite --mode api-json-serve",
+    "api-pixelli": "vite --mode api-pixelli",
+    "api-pixelli_mock": "vite --mode api-pixelli_mock",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore"

@@ -36,13 +36,19 @@
       return (this.route.name) ? this.route.name as string : "";
     }
 
+    get navigable(): boolean {
+      return (this.route.meta && this.route.meta.navigable) ? this.route.meta.navigable : false;
+    }
+
     get path(): string {
       return (this.route.path) ? this.route.path : "";
     }
   }
 
   const routes = computed(() => {
-    return router.getRoutes().map((route) => new NavigableRoute(route));
+    return router.getRoutes()
+      .map((route) => new NavigableRoute(route))
+      .filter((route) => route.navigable);
   })
 
   /**
