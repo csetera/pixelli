@@ -103,7 +103,10 @@ The `platformio.ini` file provides multiple build environments for use, dependin
 
 ### Web Application
 
-The [Vue.js](https://vuejs.org/) web application for use in controlling Pixelli can be found in the [pixelli-web](pixelli-web/README.md) folder.
+The [Vue.js](https://vuejs.org/) web application for use in controlling Pixelli can be found in the [pixelli-web](pixelli-web/README.md) folder.  This web application can be accessed at, for example, http://pixelli.local.  See the web application Readme for more information about developing and debugging the web application.  Deploy the web application to the ESP32, execute the following Platform IO tasks:
+1. Custom -> Build Webpp
+1. Platform -> Build Filesystem Image
+1. Platform -> Upload Filesystem Image
 
 ## Additional Notes
 
