@@ -6,7 +6,7 @@
 # You can obtain one at https://mozilla.org/MPL/2.0/.
 #********************************************************************************  -->
 <template>
-  <v-app theme="dark">
+  <v-app :theme="themeStore.vuetifyTheme">
     <default-bar />
     <navigation />
     <default-view />
@@ -17,4 +17,8 @@
   import DefaultBar from './AppBar.vue'
   import DefaultView from './View.vue'
   import Navigation from './Navigation.vue';
+
+  import { useThemeStore } from '@/store/theme-store'
+
+  const themeStore = useThemeStore();
 </script>

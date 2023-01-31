@@ -48,7 +48,9 @@ npm run lint
 See [Configuration Reference](https://vitejs.dev/config/).
 
 ## Dependencies
-[vite-plugin-simple-json-server](https://socket.dev/npm/package/vite-plugin-simple-json-server)
-[Vuetify](https://next.vuetifyjs.com/en/)
-[vue-concurrency](https://vue-concurrency.netlify.app/)
-[Vue Router](https://router.vuejs.org/)
+* [vite-plugin-simple-json-server](https://socket.dev/npm/package/vite-plugin-simple-json-server)
+* [Vuetify](https://next.vuetifyjs.com/en/)
+* [vue-concurrency](https://vue-concurrency.netlify.app/)
+* [Vue Router](https://router.vuejs.org/)
+* [VueUse](https://vueuse.org/)
+
