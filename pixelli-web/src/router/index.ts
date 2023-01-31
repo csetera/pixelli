@@ -53,7 +53,7 @@ const routes = [
         component: Settings,
         meta: {
           icon: "mdi-cog-outline",
-          navigable: false
+          navigable: true
         },
       },
     ],

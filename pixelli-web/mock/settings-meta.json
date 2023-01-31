@@ -1,0 +1,14 @@
+{
+    "Display": [
+        {
+            "Name": "Brightness",
+            "Type": "Percent"
+        }
+    ],
+    "News": [
+        {
+            "Name": "Color",
+            "Type": "Color"
+        }
+    ]
+}

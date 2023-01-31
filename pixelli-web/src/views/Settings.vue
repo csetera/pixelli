@@ -6,13 +6,27 @@
 # You can obtain one at https://mozilla.org/MPL/2.0/.
 #********************************************************************************  -->
 <template>
-  <v-container class="fill-height">
-    <v-responsive class="d-flex align-center text-center fill-height">
-      <h1 class="text-h2 font-weight-bold">Settings</h1>
-    </v-responsive>
-  </v-container>
+  <AsyncContent :task="task" v-slot="{ lastValue }">
+    <Content v-if="lastValue" :meta="lastValue" />
+  </AsyncContent>
 </template>
 
 <script lang="ts" setup>
-  //
+  import AsyncContent from '@/components/utility/AsyncContent.vue';
+  import Content from '@/components/settings/Content.vue';
+
+  import { SettingsMeta } from '@/models/SettingsMeta';
+  import { useTask } from 'vue-concurrency';
+
+  const url = import.meta.env.VITE_API_BASE ?
+    `${import.meta.env.VITE_API_BASE}/api/settings-meta` :
+    '/api/settings-meta';
+
+  const task = useTask(function*() {
+    const response = yield fetch(url);
+    return response.json() as SettingsMeta;
+  });
+
+  task.perform();
+
 </script>
