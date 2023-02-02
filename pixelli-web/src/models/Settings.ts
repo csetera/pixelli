@@ -7,28 +7,21 @@
  #*********************************************************************************/
 
 //
-// Typescript interfaces for API "settings-meta" response
+// Typescript interfaces for API "settings" response
 //
 
 /**
- * Supported setting types
+ * Type for a single setting value
  */
-export enum SettingType {
-  Number = 'number',
-  String = 'string',
-  Percent = 'percent',
-  Color = 'color'
-}
+export type SettingValue = string | number | boolean;
 
 /**
- * Metadata for a single setting
+ * A named setting value
  */
-export interface SettingMeta {
-  Name: string;
-  Type: SettingType;
-}
+export type NamedSettingValue = Record<string, SettingValue>;
 
 /**
- * Metadata for a group of settings.
+ * A categorized array of settings
  */
-export type SettingsMeta = Record<string, SettingMeta[]>;
+export type CategorizedSettings = Record<string, NamedSettingValue>;
+

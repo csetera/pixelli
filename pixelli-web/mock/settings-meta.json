@@ -1,14 +1,22 @@
 {
-    "Display": [
+    "Category 1": [
         {
-            "Name": "Brightness",
-            "Type": "Percent"
+            "Name": "Number",
+            "Type": "number"
+        },
+        {
+            "Name": "String",
+            "Type": "string"
         }
     ],
-    "News": [
+    "Category 2": [
+        {
+            "Name": "Percent",
+            "Type": "percent"
+        },
         {
             "Name": "Color",
-            "Type": "Color"
+            "Type": "color"
         }
     ]
 }

@@ -7,18 +7,17 @@
 #********************************************************************************  -->
 
 <template>
-  <v-expansion-panels>
-    <v-expansion-panel v-for="(value, key) in props.settingsMeta" :key="key" :title="key">
-      <category-settings :setting-metas="value" />
-    </v-expansion-panel>
-  </v-expansion-panels>
+  <!--
+  <v-text-field />
+  -->
+  <h2>String editor</h2>
+  {{ props }}
 </template>
 
 <script lang="ts" setup>
-  import CategorySettings from './CategorySettings.vue';
-  import { SettingsMeta } from '@/models/SettingsMeta';
+  import { SettingMeta } from '@/models/SettingsMeta';
 
   const props = defineProps<{
-    settingsMeta: SettingsMeta
+    settingMeta: SettingMeta
   }>()
 </script>
