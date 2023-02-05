@@ -7,17 +7,13 @@
 #********************************************************************************  -->
 
 <template>
-  <!--
-  <v-range-slider min="0" max="100" :label="props.settingMeta.Name" />
-  -->
-  <h2>Percent editor</h2>
-  {{ props }}
+  <v-slider min="0" max="100" :label="props.meta.Name" />
 </template>
 
 <script lang="ts" setup>
   import { SettingMeta } from '@/models/SettingsMeta';
 
   const props = defineProps<{
-    settingMeta: SettingMeta
+    meta: SettingMeta
   }>()
 </script>

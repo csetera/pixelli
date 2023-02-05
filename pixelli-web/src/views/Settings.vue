@@ -7,7 +7,7 @@
 #********************************************************************************  -->
 <template>
   <AsyncContent :task="task" v-slot="{ lastValue }">
-    <Content v-if="lastValue" :settingsMeta="lastValue" />
+    <Content v-if="lastValue" :meta="lastValue" />
   </AsyncContent>
 </template>
 

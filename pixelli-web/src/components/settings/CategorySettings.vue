@@ -9,16 +9,16 @@
 <template>
     <v-expansion-panel-text>
       <v-form>
-        <setting-editor v-for="meta in props.settingMetas" :key="meta.Name" :setting-meta="meta" />
+        <metadata-driven-setting-editor v-for="meta in props.meta" :key="meta.Name" :meta="meta" />
       </v-form>
     </v-expansion-panel-text>
 </template>
 
 <script lang="ts" setup>
   import { SettingMeta } from '@/models/SettingsMeta';
-  import SettingEditor from '@/components/settings/SettingEditor.vue';
+  import MetadataDrivenSettingEditor from '@/components/settings/editors/MetadataDrivenSettingEditor.vue';
 
   const props = defineProps<{
-    settingMetas: SettingMeta[]
+    meta: SettingMeta[]
   }>()
 </script>

@@ -8,8 +8,8 @@
 
 <template>
   <v-expansion-panels>
-    <v-expansion-panel v-for="(value, key) in props.settingsMeta" :key="key" :title="key">
-      <category-settings :setting-metas="value" />
+    <v-expansion-panel v-for="(value, key) in props.meta" :key="key" :title="key">
+      <category-settings :meta="value" />
     </v-expansion-panel>
   </v-expansion-panels>
 </template>
@@ -19,6 +19,6 @@
   import { SettingsMeta } from '@/models/SettingsMeta';
 
   const props = defineProps<{
-    settingsMeta: SettingsMeta
+    meta: SettingsMeta
   }>()
 </script>

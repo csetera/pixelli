@@ -7,17 +7,13 @@
 #********************************************************************************  -->
 
 <template>
-  <!--
-  <v-text-field />
-  -->
-  <h2>Number editor</h2>
-  {{ props }}
+  <v-text-field type="number" :label="props.meta.Name" />
 </template>
 
 <script lang="ts" setup>
   import { SettingMeta } from '@/models/SettingsMeta';
 
   const props = defineProps<{
-    settingMeta: SettingMeta
+    meta: SettingMeta
   }>()
 </script>

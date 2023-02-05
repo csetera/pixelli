@@ -8,7 +8,7 @@
 
 <!-- Dynamic wrapper component for editors of different types -->
 <template>
-  <component :is="editors[props.settingMeta.Type]" :propData="props.settingMeta"/>
+  <component :is="editors[props.meta.Type]" :meta="meta"/>
 </template>
 
 <script lang="ts" setup>
@@ -31,6 +31,6 @@
   };
 
   const props = defineProps<{
-    settingMeta: SettingMeta
+    meta: SettingMeta
   }>()
 </script>
