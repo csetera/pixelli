@@ -11,17 +11,30 @@
 //
 
 /**
+ * Supported setting types
+ */
+export enum SettingType {
+  Number = 'number',
+  String = 'string',
+  Percent = 'percent',
+  Color = 'color'
+}
+
+/**
  * Type for a single setting value
  */
 export type SettingValue = string | number | boolean;
 
 /**
- * A named setting value
+ * A single setting
  */
-export type NamedSettingValue = Record<string, SettingValue>;
+export interface Setting {
+  Name: string;
+  Type: SettingType;
+  Value: SettingValue;
+}
 
 /**
- * A categorized array of settings
+ * A group of settings.
  */
-export type CategorizedSettings = Record<string, NamedSettingValue>;
-
+export type CategorizedSettings = Record<string, Setting[]>;

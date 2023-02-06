@@ -17,13 +17,10 @@
 
   import { DeviceInfo } from '@/models/DeviceInfo';
   import { useTask } from 'vue-concurrency';
-
-  const url = import.meta.env.VITE_API_BASE ?
-    `${import.meta.env.VITE_API_BASE}/api/info` :
-    '/api/info';
+  import { doFetch } from '@/utils/network';
 
   const task = useTask(function*() {
-    const response = yield fetch(url);
+    const response = yield doFetch('/api/info');
     return response.json() as DeviceInfo;
   });
 

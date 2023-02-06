@@ -7,7 +7,7 @@
 #********************************************************************************  -->
 <template>
   <AsyncContent :task="task" v-slot="{ lastValue }">
-    <Content v-if="lastValue" :meta="lastValue" />
+    <Content v-if="lastValue" :settings="lastValue" />
   </AsyncContent>
 </template>
 
@@ -15,16 +15,13 @@
   import AsyncContent from '@/components/utility/AsyncContent.vue';
   import Content from '@/components/settings/Content.vue';
 
-  import { SettingsMeta } from '@/models/SettingsMeta';
+  import { CategorizedSettings } from '@/models/Settings';
   import { useTask } from 'vue-concurrency';
-
-  const url = import.meta.env.VITE_API_BASE ?
-    `${import.meta.env.VITE_API_BASE}/api/settings-meta` :
-    '/api/settings-meta';
+  import { doFetch } from '@/utils/network';
 
   const task = useTask(function*() {
-    const response = yield fetch(url);
-    return response.json() as SettingsMeta;
+    const response = yield doFetch('/api/settings');
+    return response.json() as CategorizedSettings;
   });
 
   task.perform();

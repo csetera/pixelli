@@ -8,11 +8,11 @@
 
 <!-- Dynamic wrapper component for editors of different types -->
 <template>
-  <component :is="editors[props.meta.Type]" :meta="meta"/>
+  <component :is="editors[props.setting.Type]" :setting="setting"/>
 </template>
 
 <script lang="ts" setup>
-  import { SettingMeta, SettingType } from '@/models/SettingsMeta';
+  import { Setting, SettingType } from '@/models/Settings'
 
   import ColorEditor from '@/components/settings/editors/ColorEditor.vue';
   import NumberEditor from '@/components/settings/editors/NumberEditor.vue';
@@ -31,6 +31,6 @@
   };
 
   const props = defineProps<{
-    meta: SettingMeta
+    setting: Setting
   }>()
 </script>

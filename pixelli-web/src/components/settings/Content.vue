@@ -8,17 +8,17 @@
 
 <template>
   <v-expansion-panels>
-    <v-expansion-panel v-for="(value, key) in props.meta" :key="key" :title="key">
-      <category-settings :meta="value" />
+    <v-expansion-panel v-for="(value, key) in props.settings" :key="key" :title="key">
+      <category-settings :settings="value" />
     </v-expansion-panel>
   </v-expansion-panels>
 </template>
 
 <script lang="ts" setup>
+  import { CategorizedSettings } from '@/models/Settings';
   import CategorySettings from './CategorySettings.vue';
-  import { SettingsMeta } from '@/models/SettingsMeta';
 
   const props = defineProps<{
-    meta: SettingsMeta
+    settings: CategorizedSettings
   }>()
 </script>

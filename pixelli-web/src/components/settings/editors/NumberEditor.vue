@@ -7,13 +7,13 @@
 #********************************************************************************  -->
 
 <template>
-  <v-text-field type="number" :label="props.meta.Name" />
+  <v-text-field type="number" :label="props.setting.Name" />
 </template>
 
 <script lang="ts" setup>
-  import { SettingMeta } from '@/models/SettingsMeta';
+  import { Setting } from '@/models/Settings';
 
   const props = defineProps<{
-    meta: SettingMeta
+    setting: Setting
   }>()
 </script>

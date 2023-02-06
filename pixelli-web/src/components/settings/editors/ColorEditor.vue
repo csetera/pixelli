@@ -10,7 +10,7 @@
   <v-input>
     <v-container fluid>
       <v-row>
-        <v-label>{{ props.meta.Name }}</v-label>
+        <v-label>{{ props.setting.Name }}</v-label>
       </v-row>
       <v-row>
         <v-btn :color="data.color" :style="textStyle" @click="openColorPicker">
@@ -29,10 +29,10 @@
 
 <script lang="ts" setup>
   import { computed, reactive } from 'vue';
-  import { SettingMeta } from '@/models/SettingsMeta';
+  import { Setting } from '@/models/Settings';
 
   const props = defineProps<{
-    meta: SettingMeta
+    setting: Setting
   }>()
 
   const data = reactive({

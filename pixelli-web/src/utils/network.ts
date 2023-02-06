@@ -6,29 +6,16 @@
  # You can obtain one at https://mozilla.org/MPL/2.0/.
  #*********************************************************************************/
 
-//
-// Typescript interfaces for API "settings-meta" response
-//
-
 /**
- * Supported setting types
+ * fetch a network resources, accounting for different API base paths.
+ *
+ * @param relativePath
+ * @returns
  */
-export enum SettingType {
-  Number = 'number',
-  String = 'string',
-  Percent = 'percent',
-  Color = 'color'
+export function doFetch(relativePath: string, init?: RequestInit): Promise<Response> {
+  const url = import.meta.env.VITE_API_BASE ?
+    `${import.meta.env.VITE_API_BASE}${relativePath}` :
+    relativePath;
+
+  return fetch(url, init);
 }
-
-/**
- * Metadata for a single setting
- */
-export interface SettingMeta {
-  Name: string;
-  Type: SettingType;
-}
-
-/**
- * Metadata for a group of settings.
- */
-export type SettingsMeta = Record<string, SettingMeta[]>;
