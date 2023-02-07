@@ -7,13 +7,16 @@
 #********************************************************************************  -->
 
 <template>
-  <v-slider min="0" max="100" :label="props.setting.Name" />
+  <v-slider min="0" max="100" :label="props.setting.Name" v-model="value" />
 </template>
 
 <script lang="ts" setup>
+  import { ref } from 'vue';
   import { Setting } from '@/models/Settings'
 
   const props = defineProps<{
     setting: Setting
   }>()
+
+  const value = ref(props.setting.Value as number);
 </script>

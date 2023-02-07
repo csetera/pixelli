@@ -10,62 +10,41 @@
   <v-input>
     <v-container fluid>
       <v-row>
-        <v-label>{{ props.setting.Name }}</v-label>
-      </v-row>
-      <v-row>
-        <v-btn :color="data.color" :style="textStyle" @click="openColorPicker">
-          Color Chip
+        <v-col cols="auto">
+          <v-label>{{ props.setting.Name }}</v-label>
+        </v-col>
 
-          <v-dialog v-model="data.dialog" activator="parent" width="300">
-            <v-color-picker :modes="[ 'hexa' ]" mode="hexa" hide-inputs :model-value="data.color" width="300" />
-            <v-btn @click="data.dialog = false">Close Dialog</v-btn>
-          </v-dialog>
+        <v-col>
+          <v-btn :color="color" :style="textStyle">
+            {{ color }}
 
-        </v-btn>
+            <v-dialog v-model="dialogOpen" activator="parent" width="300">
+              <v-color-picker :modes="[ 'hexa' ]" mode="hexa" hide-inputs width="300" v-model="color" />
+              <v-btn @click="dialogOpen = false">Done</v-btn>
+            </v-dialog>
+
+          </v-btn>
+        </v-col>
       </v-row>
     </v-container>
   </v-input>
 </template>
 
 <script lang="ts" setup>
-  import { computed, reactive } from 'vue';
+  import { computed, ref } from 'vue';
   import { Setting } from '@/models/Settings';
+  import { getContrastYIQ } from '@/utils/colors';
 
   const props = defineProps<{
     setting: Setting
   }>()
 
-  const data = reactive({
-    dialog: false,
-    color: '#ff0000'
-  });
+  const color = ref(props.setting.Value as string);
+  const dialogOpen = ref(false);
 
+  // Return a contrasting text style
   const textStyle = computed(() => {
-    return { color: getContrastYIQ(data.color) }
+    return { color: (getContrastYIQ(color.value) >= 128) ? 'black' : 'white' }
   });
 
-  /**
-   * Click handler to open the color picker.
-   */
-  function openColorPicker(): void {
-    console.log("Open picker");
-  }
-
-  /**
-   * Calculate a contrasting color to the one that is specified.
-   * Based on https://24ways.org/2010/calculating-color-contrast/.
-   *
-   * @param hexcolor
-   */
-  function getContrastYIQ(hexcolor: string): string {
-    let normalized = (hexcolor.startsWith("#")) ? hexcolor.slice(1) : hexcolor;
-
-    let r = parseInt(normalized.slice(0, 2), 16);
-    let g = parseInt(normalized.slice(2, 4), 16);
-    let b = parseInt(normalized.slice(4, 6), 16);
-
-    let yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-
-    return (yiq >= 128) ? 'black' : 'white';
-  }
 </script>

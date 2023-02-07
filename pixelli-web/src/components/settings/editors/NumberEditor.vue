@@ -7,13 +7,16 @@
 #********************************************************************************  -->
 
 <template>
-  <v-text-field type="number" :label="props.setting.Name" />
+  <v-text-field type="number" :label="props.setting.Name" v-model="value" />
 </template>
 
 <script lang="ts" setup>
+  import { ref } from 'vue';
   import { Setting } from '@/models/Settings';
 
   const props = defineProps<{
     setting: Setting
   }>()
+
+  const value = ref(props.setting.Value);
 </script>
