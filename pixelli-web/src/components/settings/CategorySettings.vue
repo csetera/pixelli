@@ -9,7 +9,11 @@
 <template>
     <v-expansion-panel-text>
       <v-form>
-        <metadata-driven-setting-editor v-for="setting in props.settings" :key="setting.Name" :setting="setting" />
+        <metadata-driven-setting-editor
+          v-for="setting in props.settings"
+          :key="setting.Name"
+          :setting="setting"
+          @setting-updated="settingUpdated"/>
       </v-form>
     </v-expansion-panel-text>
 </template>
@@ -18,7 +22,15 @@
   import { Setting } from '@/models/Settings';
   import MetadataDrivenSettingEditor from '@/components/settings/editors/MetadataDrivenSettingEditor.vue';
 
+  const emit = defineEmits<{
+    (e: 'settingUpdated', value: Setting): void
+  }>()
+
   const props = defineProps<{
     settings: Setting[]
   }>()
+
+  function settingUpdated(setting: Setting): void {
+    emit("settingUpdated", setting);
+  }
 </script>

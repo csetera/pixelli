@@ -8,11 +8,11 @@
 
 <!-- Dynamic wrapper component for editors of different types -->
 <template>
-  <component :is="editors[props.setting.Type]" :setting="setting"/>
+  <component :is="editors[props.setting.Type]" :setting="setting" @value-updated="editorValueUpdated" />
 </template>
 
 <script lang="ts" setup>
-  import { Setting, SettingType } from '@/models/Settings'
+  import { Setting, SettingType, SettingValue } from '@/models/Settings'
 
   import ColorEditor from '@/components/settings/editors/ColorEditor.vue';
   import NumberEditor from '@/components/settings/editors/NumberEditor.vue';
@@ -30,7 +30,19 @@
     string: StringEditor
   };
 
+  const emit = defineEmits<{
+    (e: 'settingUpdated', value: Setting): void
+  }>()
+
   const props = defineProps<{
     setting: Setting
   }>()
+
+  function editorValueUpdated(value: SettingValue): void {
+    emit('settingUpdated', {
+      Name: props.setting.Name,
+      Type: props.setting.Type,
+      Value: value
+    });
+  }
 </script>

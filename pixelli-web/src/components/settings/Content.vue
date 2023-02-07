@@ -8,17 +8,22 @@
 
 <template>
   <v-expansion-panels>
-    <v-expansion-panel v-for="(value, key) in props.settings" :key="key" :title="key">
-      <category-settings :settings="value" />
+    <v-expansion-panel
+      v-for="(value, key) in props.settings" :key="key" :title="key">
+        <category-settings :settings="value" @setting-updated="settingUpdated(key, $event)"/>
     </v-expansion-panel>
   </v-expansion-panels>
 </template>
 
 <script lang="ts" setup>
-  import { CategorizedSettings } from '@/models/Settings';
+  import { CategorizedSettings, Setting } from '@/models/Settings';
   import CategorySettings from './CategorySettings.vue';
 
   const props = defineProps<{
     settings: CategorizedSettings
   }>()
+
+  function settingUpdated(category: string, setting: Setting): void {
+    console.log('settingUpdated', category, setting);
+  }
 </script>

@@ -11,12 +11,19 @@
 </template>
 
 <script lang="ts" setup>
-  import { ref } from 'vue';
+  import { ref, watch } from 'vue';
   import { Setting } from '@/models/Settings';
+
+  const emit = defineEmits<{
+    (e: 'valueUpdated', value: number): void
+  }>()
 
   const props = defineProps<{
     setting: Setting
   }>()
 
-  const value = ref(props.setting.Value);
+  const value = ref(props.setting.Value as number);
+  watch(value, (newValue: number) => {
+    emit('valueUpdated', newValue);
+  });
 </script>

@@ -31,16 +31,24 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, ref } from 'vue';
+  import { computed, ref, watch } from 'vue';
   import { Setting } from '@/models/Settings';
   import { getContrastYIQ } from '@/utils/colors';
+
+  const dialogOpen = ref(false);
+
+  const emit = defineEmits<{
+    (e: 'valueUpdated', value: string): void
+  }>()
 
   const props = defineProps<{
     setting: Setting
   }>()
 
   const color = ref(props.setting.Value as string);
-  const dialogOpen = ref(false);
+  watch(color, (newValue: string) => {
+    emit('valueUpdated', newValue);
+  });
 
   // Return a contrasting text style
   const textStyle = computed(() => {
