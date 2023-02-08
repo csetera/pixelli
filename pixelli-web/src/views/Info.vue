@@ -17,10 +17,10 @@
 
   import { DeviceInfo } from '@/models/DeviceInfo';
   import { useTask } from 'vue-concurrency';
-  import { doFetch } from '@/utils/network';
+  import { doGet } from '@/utils/network';
 
-  const task = useTask(function*() {
-    const response = yield doFetch('/api/info');
+  const task = useTask(function*(signal: AbortSignal) {
+    const response = yield doGet('/api/info', signal);
     return response.json() as DeviceInfo;
   });
 

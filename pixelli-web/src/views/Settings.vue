@@ -7,7 +7,7 @@
 #********************************************************************************  -->
 <template>
   <AsyncContent :task="task" v-slot="{ lastValue }">
-    <Content v-if="lastValue" :settings="lastValue" />
+    <Content v-if="lastValue" :settings="lastValue" @save-settings="saveSettings($event)"/>
   </AsyncContent>
 </template>
 
@@ -17,13 +17,25 @@
 
   import { CategorizedSettings } from '@/models/Settings';
   import { useTask } from 'vue-concurrency';
-  import { doFetch } from '@/utils/network';
+  import { doGet, doPost } from '@/utils/network';
 
-  const task = useTask(function*() {
-    const response = yield doFetch('/api/settings');
+  const task = useTask(function*(signal: AbortSignal, settings?: CategorizedSettings) {
+    const requestPromnise = (settings) ?
+      doPost('/api/settings', settings, signal) :
+      doGet('/api/settings', signal);
+
+    const response = yield requestPromnise;
     return response.json() as CategorizedSettings;
   });
 
   task.perform();
 
+  /**
+   * Save the specified settings back to the server.
+   *
+   * @param settings
+   */
+  function saveSettings(settings: CategorizedSettings) {
+    task.perform(settings);
+  }
 </script>
