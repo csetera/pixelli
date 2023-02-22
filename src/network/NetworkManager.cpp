@@ -63,6 +63,17 @@ class CORSPreflightHandler : public AsyncWebHandler {
 } corsPreflightHandler;
 
 /**
+ * @brief Handler implementation for receiving settings updates and
+ * passing them on to the SettingsManager.
+ */
+AsyncCallbackJsonWebHandler* updateSettingsHandler = new AsyncCallbackJsonWebHandler("/api/settings", [](AsyncWebServerRequest *request, JsonVariant &json) {
+    Serial.println("Received Settings update request");
+    JsonObject jsonObj = json.as<JsonObject>();
+    SettingsManager::get().updateSettings(jsonObj);
+    request->send(200);
+});
+
+/**
  * @brief Incoming websocket event handler
  *
  * @param server
@@ -117,8 +128,9 @@ void NetworkManager::smartConfig() {
 
         if (waitForConnection()) {
             Serial.printf("Smartconfig value: %s/%s\n", WiFi.SSID().c_str(), WiFi.psk().c_str());
-            settingsManager.setWifiPass(WiFi.psk().c_str());
-            settingsManager.setWifiSsid(WiFi.SSID().c_str());
+            SettingsManager &settingsManager = SettingsManager::get();
+            settingsManager.setWifiPassword(WiFi.psk().c_str());
+            settingsManager.setWifiSSID(WiFi.SSID().c_str());
             Serial.println("Writing out settings");
             settingsManager.writeSettings();
         }
@@ -143,10 +155,13 @@ void NetworkManager::start() {
     registerHandlers();
     configureOTAUpdates();
 
-    settingsManager.readSettings();
-    if (settingsManager.isIntialized()) {
-        Serial.printf("EEPROM was intialized SSID: %s; Pass: %s\n", settingsManager.getWifiSsid(), settingsManager.getWIfiPass());
-        WiFi.begin(settingsManager.getWifiSsid(), settingsManager.getWIfiPass());
+    SettingsManager &settingsManager = SettingsManager::get();
+    const char *ssid = settingsManager.getWifiSSID();
+    const char *psk = settingsManager.getWifiPassword();
+
+    if ((ssid != nullptr) && (psk != nullptr)) {
+        Serial.printf("Settings were intialized SSID: %s; Pass: %s\n", ssid, psk);
+        WiFi.begin(ssid, psk);
         if (!waitForConnection()) {
             smartConfig();
         }
@@ -200,7 +215,7 @@ void NetworkManager::loop() {
  *
  * @param request
  */
-void handleInfoRequest(AsyncWebServerRequest *request) {
+void getInfo(AsyncWebServerRequest *request) {
     Logger::get().println("Received info request");
 
     char build_timestamp[FORMATTED_BUILD_TIMESTAMP_LENGTH];
@@ -252,7 +267,7 @@ void handleInfoRequest(AsyncWebServerRequest *request) {
  *
  * @param request The incoming reuquest information.
  */
-void handleNetworksRequest(AsyncWebServerRequest *request) {
+void getNetworks(AsyncWebServerRequest *request) {
     Logger::get().println("Received networks request");
     int n = WiFi.scanNetworks();
 
@@ -274,6 +289,24 @@ void handleNetworksRequest(AsyncWebServerRequest *request) {
     request->send(response);
 
     WiFi.scanDelete();
+}
+
+/**
+ * @brief Handle a request for current settings.
+ *
+ * @param request The incoming reuquest information.
+ */
+void getSettings(AsyncWebServerRequest *request) {
+    Logger::get().println("Received get settings request");
+
+    AsyncJsonResponse *response = new AsyncJsonResponse();
+    addCorsHeaders(request, response);
+
+    JsonVariant &root = response->getRoot();
+    SettingsManager::get().sendSettingsResponse(root);
+
+    response->setLength();
+    request->send(response);
 }
 
 /**
@@ -332,6 +365,26 @@ void NetworkManager::onWifiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
 }
 
 /**
+ * @brief Handle a request to put new settings.
+ *
+ * @param request The incoming reuquest information.
+ */
+void putSettings(AsyncWebServerRequest *request) {
+    Logger::get().println("Received put settings request");
+
+    AsyncJsonResponse *response = new AsyncJsonResponse();
+    addCorsHeaders(request, response);
+
+    JsonVariant &root = response->getRoot();
+    JsonObject obj = root.to<JsonObject>();
+    SettingsManager::get().updateSettings(obj);
+
+    response->setLength();
+    request->send(response);
+}
+
+
+/**
  * @brief Configure the web server
  */
 void NetworkManager::registerHandlers() {
@@ -339,8 +392,12 @@ void NetworkManager::registerHandlers() {
 
     // API endpoints
     webServer.addHandler(&corsPreflightHandler);
-    webServer.on("/api/info", handleInfoRequest);
-    webServer.on("/api/networks", handleNetworksRequest);
+    webServer.on("/api/info", getInfo);
+    webServer.on("/api/networks", getNetworks);
+    webServer.on("/api/settings", HTTP_GET, getSettings);
+
+    // Handle settings updates
+    webServer.addHandler(updateSettingsHandler);
 
     // Web application serving
     webServer.rewrite("/", "/index.html");

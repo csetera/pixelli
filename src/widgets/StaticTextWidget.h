@@ -18,7 +18,7 @@ class StaticTextWidget : public BaseTextWidget {
 public:
     static constexpr char *NAME = (char*) "Static Text";
 
-    StaticTextWidget(Scheduler *scheduler, char *value, CRGB color = CRGB::White) : BaseTextWidget(scheduler) {
+    StaticTextWidget(Scheduler *scheduler, const char *value, CRGB color = CRGB::White) : BaseTextWidget(scheduler) {
         displayValue.concat(value);
         this->color = color;
     }
