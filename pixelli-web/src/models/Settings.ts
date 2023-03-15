@@ -16,6 +16,7 @@
 export enum SettingType {
   Number = 'number',
   String = 'string',
+  Password = 'password',
   Percent = 'percent',
   Color = 'color'
 }

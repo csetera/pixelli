@@ -8,14 +8,16 @@
 
 <!-- Dynamic wrapper component for editors of different types -->
 <template>
-  <component :is="editors[props.setting.Type]" :setting="setting" @value-updated="editorValueUpdated" />
+  <component :is="editorComponent" :setting="setting" @value-updated="editorValueUpdated" />
 </template>
 
 <script lang="ts" setup>
+  import { computed } from 'vue';
   import { Setting, SettingType, SettingValue } from '@/models/Settings'
 
   import ColorEditor from '@/components/settings/editors/ColorEditor.vue';
   import NumberEditor from '@/components/settings/editors/NumberEditor.vue';
+  import PasswordEditor from '@/components/settings/editors/PasswordEditor.vue';
   import PercentEditor from '@/components/settings/editors/PercentEditor.vue';
   import StringEditor from '@/components/settings/editors/StringEditor.vue';
 
@@ -26,6 +28,7 @@
   const editors: EditorConfiguration = {
     color: ColorEditor,
     number: NumberEditor,
+    password: PasswordEditor,
     percent: PercentEditor,
     string: StringEditor
   };
@@ -37,6 +40,10 @@
   const props = defineProps<{
     setting: Setting
   }>()
+
+  const editorComponent = computed(() => {
+    return props.setting.Type in editors ? editors[props.setting.Type] : StringEditor;
+  })
 
   function editorValueUpdated(value: SettingValue): void {
     emit('settingUpdated', {

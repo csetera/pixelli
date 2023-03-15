@@ -21,6 +21,11 @@
             "Name": "Color",
             "Type": "color",
             "Value": "#5f00ff"
+        },
+        {
+            "Name": "Password",
+            "Type": "password",
+            "Value": "mypassw"
         }
     ]
 }
