@@ -13,6 +13,14 @@
 
 namespace Utils {
     /**
+     * @brief Convert a CRGB structure into a hex color string,
+     * storing the result in the provided buffer.
+     *
+     * @param color
+     * @param buffer
+     */
+    void crgbToHexColorString(CRGB color, char *buffer);
+    /**
      * @brief Format the build timestamp into the provided buffer.
      *
      * @param buffer
@@ -25,4 +33,13 @@ namespace Utils {
      * @return CRGB
      */
     CRGB getRandomColor();
+
+    /**
+     * @brief Convert a hex color string into a CRGB structure.
+     *
+     * @param colorString
+     * @return CRGB
+     */
+    CRGB hexColorStringToCrgb(const char *colorString);
+
 }

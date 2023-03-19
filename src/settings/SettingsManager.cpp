@@ -5,12 +5,15 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include <misc/Utils.h>
+
 SettingsManager& SettingsManager::get() {
     static SettingsManager singleton;
     return singleton;
 }
 
 SettingsManager::SettingsManager() {
+    newsColor = CRGB::White;
 };
 
 /**
@@ -37,6 +40,11 @@ bool SettingsManager::readSettings() {
         }
 
         // Destructure the setting values
+        if (doc.containsKey(NEWS_SETTINGS)) {
+            String colorString = doc[NEWS_SETTINGS][NEWS_COLOR];
+            setNewsColor(Utils::hexColorStringToCrgb(colorString.c_str()));
+        }
+
         if (doc.containsKey(WIFI_SETTINGS)) {
             setWifiSSID(doc[WIFI_SETTINGS][WIFI_SSID_KEY]);
             setWifiPassword(doc[WIFI_SETTINGS][WIFI_PASS_KEY]);
@@ -86,6 +94,12 @@ void addDefinition(JsonArray &array, const char *name, const char *type, const c
 void SettingsManager::sendSettingsResponse(JsonVariant &root) {
     JsonObject obj = root.to<JsonObject>();
 
+    char colorString[8];
+    Utils::crgbToHexColorString(newsColor, colorString);
+
+    auto newsSettings = obj.createNestedArray(NEWS_SETTINGS);
+    addDefinition(newsSettings, "Color", "color", colorString);
+
     if ((wifiSSID != nullptr) || (wifiPassword != nullptr)) {
         auto wifiSettings = obj.createNestedArray(WIFI_SETTINGS);
         addDefinition(wifiSettings, "SSID", "string", wifiSSID);
@@ -122,12 +136,40 @@ void SettingsManager::setWifiSSID(const char *value) {
 }
 
 /**
+ * @brief Update the news settings based on the JsonArray
+ * information.
+ *
+ * @param settings
+ */
+bool SettingsManager::updateNewsSettings(JsonArray &settings) {
+    bool updated = false;
+
+    for (int i = 0; i < settings.size(); i++) {
+        auto obj = settings[i];
+        String name = obj["Name"];
+
+        if (name == "Color") {
+            String value = obj["Value"];
+            setNewsColor(Utils::hexColorStringToCrgb(value.c_str()));
+            updated = true;
+        }
+    }
+
+    return updated;
+}
+
+/**
  * @brief Update the settings based on the specified JSON object.
  *
  * @param obj
  */
 void SettingsManager::updateSettings(JsonObject &obj) {
     bool updated = false;
+
+    if (obj.containsKey(NEWS_SETTINGS)) {
+        JsonArray settings = obj[NEWS_SETTINGS];
+        updated = updateNewsSettings(settings);
+    }
 
     if (obj.containsKey(WIFI_SETTINGS)) {
         JsonArray settings = obj[WIFI_SETTINGS];
@@ -171,6 +213,12 @@ bool SettingsManager::updateWifiSettings(JsonArray &settings) {
  */
 void SettingsManager::writeSettings() {
     StaticJsonDocument<256> doc;
+
+    char colorString[8];
+    Utils::crgbToHexColorString(newsColor, colorString);
+
+    auto news = doc.createNestedObject(NEWS_SETTINGS);
+    news[NEWS_COLOR] = colorString;
 
     if ((wifiSSID != nullptr) || (wifiPassword != nullptr)) {
         auto wifi = doc.createNestedObject(WIFI_SETTINGS);

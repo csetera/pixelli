@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <ArduinoJson.h>
+#include <FastLED.h>
 
 class SettingsManager {
 public:
@@ -14,6 +15,15 @@ public:
 
     // Disable copy semantics
     SettingsManager(const SettingsManager&) = delete;
+
+    /**
+     * @brief Get the Color for displaying the news
+     *
+     * @return CRGB
+     */
+    CRGB getNewsColor() {
+        return newsColor;
+    }
 
     /**
      * @brief Get the Wifi SSID
@@ -54,6 +64,15 @@ public:
     void sendSettingsResponse(JsonVariant &root);
 
     /**
+     * @brief Set the Color for displaying the news
+     *
+     * @return CRGB
+     */
+    void setNewsColor(CRGB newColor) {
+        newsColor = newColor;
+    }
+
+    /**
      * @brief Set the Wifi SSID
      *
      * @param value
@@ -83,13 +102,29 @@ private:
     static const size_t MAX_WIFI_SSID_LENGTH = 33;
     static const size_t MAX_WIFI_PASS_LENGTH = 65;
 
-    static constexpr const char *WIFI_SETTINGS = "WiFi";
-    static constexpr const char *WIFI_SSID_KEY = "ssid";
-    static constexpr const char *WIFI_PASS_KEY = "pass";
+    static constexpr const char *NEWS_SETTINGS      = "News";
+    static constexpr const char *NEWS_COLOR         = "Color";
+
+    static constexpr const char *WIFI_SETTINGS      = "WiFi";
+    static constexpr const char *WIFI_SSID_KEY      = "ssid";
+    static constexpr const char *WIFI_PASS_KEY      = "pass";
 
     static constexpr const char *SETTINGS_FILE = "/settings.json";
 
     SettingsManager();
+
+    CRGB newsColor;
+
+    char *wifiSSID;
+    char *wifiPassword;
+
+    /**
+     * @brief Update the news settings based on the JsonArray
+     * information.
+     *
+     * @param settings
+     */
+    bool updateNewsSettings(JsonArray &settings);
 
     /**
      * @brief Update the wifi settings based on the JsonArray
@@ -98,7 +133,4 @@ private:
      * @param settings
      */
     bool updateWifiSettings(JsonArray &settings);
-
-    char *wifiSSID;
-    char *wifiPassword;
 };
