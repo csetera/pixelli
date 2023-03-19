@@ -7,7 +7,6 @@
  **********************************************************************************/
 #include <Arduino.h>
 #include <ArduinoOTA.h>
-#include <AsyncJson.h>
 #include <ESPmDNS.h>
 #include <LittleFS.h>
 
@@ -26,27 +25,6 @@
 #include "NetworkManager.h"
 
 /**
- * @brief Add CORS headers to the specified response.
- *
- * @param request
- * @param response
- */
-void addCorsHeaders(AsyncWebServerRequest *request, AsyncWebServerResponse *response) {
-    if (request->hasHeader("Origin")) {
-        auto origin = request->getHeader("Origin");
-        response->addHeader("Access-Control-Allow-Origin", origin->value());
-    } else {
-        response->addHeader("Access-Control-Allow-Origin", "*");
-    }
-
-    response->addHeader("Access-Control-Allow-Credentials", "true");
-    response->addHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-    response->addHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
-    response->addHeader("Access-Control-Max-Age", "86400");
-    response->addHeader("Vary", "Accept-Encoding, Origin");
-}
-
-/**
  * @brief A AsyncWebHandler implementation that handles CORS preflight
  * requests.
  */
@@ -56,22 +34,9 @@ class CORSPreflightHandler : public AsyncWebHandler {
     }
 
     virtual void handleRequest(AsyncWebServerRequest *request) {
-        AsyncWebServerResponse *response = request->beginResponse(204, "text/plain", "");
-        addCorsHeaders(request, response);
-        request->send(response);
+        request->send(200);
     }
 } corsPreflightHandler;
-
-/**
- * @brief Handler implementation for receiving settings updates and
- * passing them on to the SettingsManager.
- */
-AsyncCallbackJsonWebHandler* updateSettingsHandler = new AsyncCallbackJsonWebHandler("/api/settings", [](AsyncWebServerRequest *request, JsonVariant &json) {
-    Serial.println("Received Settings update request");
-    JsonObject jsonObj = json.as<JsonObject>();
-    SettingsManager::get().updateSettings(jsonObj);
-    request->send(200);
-});
 
 /**
  * @brief Incoming websocket event handler
@@ -107,6 +72,25 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
     }
 }
 
+NetworkManager::NetworkManager() : webServer(80), wsSerial("/ws_serial") {
+    // CORS headers
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
+    DefaultHeaders::Instance().addHeader("Access-Control-Allow-Headers", "Authorization, Content-Type");
+    DefaultHeaders::Instance().addHeader("Access-Control-Max-Age", "86400");
+    DefaultHeaders::Instance().addHeader("Vary", "Accept-Encoding, Origin");
+
+    // @brief Handler implementation for receiving settings updates and
+    // passing them on to the SettingsManager.
+    updateSettingsHandler = new AsyncCallbackJsonWebHandler("/api/settings", [this](AsyncWebServerRequest *request, JsonVariant &json) {
+        Serial.println("Received Settings update request");
+        JsonObject jsonObj = json.as<JsonObject>();
+        SettingsManager::get().updateSettings(jsonObj);
+        this->getSettings(request);
+    });
+}
+
 /**
  * @brief Handle Espressif Smartconfig to configure SSID and password.
  * See https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_smartconfig.html
@@ -115,7 +99,6 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
 void NetworkManager::smartConfig() {
     do {
         Serial.println("Starting SmartConfig");
-
         WiFi.beginSmartConfig();
 
         while (!WiFi.smartConfigDone()) {
@@ -198,7 +181,6 @@ bool NetworkManager::waitForConnection() {
         return true;
     } else {
         Serial.println("WiFi did not connect");
-
         return false;
     }
 }
@@ -222,8 +204,6 @@ void getInfo(AsyncWebServerRequest *request) {
     Utils::formatBuildTimestamp(build_timestamp);
 
     AsyncJsonResponse *response = new AsyncJsonResponse();
-    addCorsHeaders(request, response);
-
     JsonVariant &root = response->getRoot();
     JsonObject obj = root.to<JsonObject>();
 
@@ -272,8 +252,6 @@ void getNetworks(AsyncWebServerRequest *request) {
     int n = WiFi.scanNetworks();
 
     AsyncJsonResponse *response = new AsyncJsonResponse();
-    addCorsHeaders(request, response);
-
     JsonVariant &root = response->getRoot();
     JsonArray array = root.to<JsonArray>();
 
@@ -296,12 +274,8 @@ void getNetworks(AsyncWebServerRequest *request) {
  *
  * @param request The incoming reuquest information.
  */
-void getSettings(AsyncWebServerRequest *request) {
-    Logger::get().println("Received get settings request");
-
+void NetworkManager::getSettings(AsyncWebServerRequest *request) {
     AsyncJsonResponse *response = new AsyncJsonResponse();
-    addCorsHeaders(request, response);
-
     JsonVariant &root = response->getRoot();
     SettingsManager::get().sendSettingsResponse(root);
 
@@ -365,36 +339,21 @@ void NetworkManager::onWifiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
 }
 
 /**
- * @brief Handle a request to put new settings.
- *
- * @param request The incoming reuquest information.
- */
-void putSettings(AsyncWebServerRequest *request) {
-    Logger::get().println("Received put settings request");
-
-    AsyncJsonResponse *response = new AsyncJsonResponse();
-    addCorsHeaders(request, response);
-
-    JsonVariant &root = response->getRoot();
-    JsonObject obj = root.to<JsonObject>();
-    SettingsManager::get().updateSettings(obj);
-
-    response->setLength();
-    request->send(response);
-}
-
-
-/**
  * @brief Configure the web server
  */
 void NetworkManager::registerHandlers() {
     Serial.println("Registering web handlers");
 
-    // API endpoints
+    // CORS handling
     webServer.addHandler(&corsPreflightHandler);
+
+    // API endpoints
     webServer.on("/api/info", getInfo);
     webServer.on("/api/networks", getNetworks);
-    webServer.on("/api/settings", HTTP_GET, getSettings);
+    webServer.on("/api/settings", HTTP_GET, [this](AsyncWebServerRequest *request) {
+        Logger::get().println("Received get settings request");
+        this->getSettings(request);
+    });
 
     // Handle settings updates
     webServer.addHandler(updateSettingsHandler);

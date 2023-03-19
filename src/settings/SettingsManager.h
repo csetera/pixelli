@@ -83,7 +83,7 @@ private:
     static const size_t MAX_WIFI_SSID_LENGTH = 33;
     static const size_t MAX_WIFI_PASS_LENGTH = 65;
 
-    static constexpr const char *WIFI_SETTINGS = "wifi";
+    static constexpr const char *WIFI_SETTINGS = "WiFi";
     static constexpr const char *WIFI_SSID_KEY = "ssid";
     static constexpr const char *WIFI_PASS_KEY = "pass";
 

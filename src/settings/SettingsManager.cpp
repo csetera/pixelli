@@ -30,7 +30,7 @@ bool SettingsManager::readSettings() {
         file.close();
 
         // Check for deserialization errors
-        if ((error != nullptr) && (error.code() != DeserializationError::Code::Ok)) {
+        if (error.code() != DeserializationError::Code::Ok) {
             const char *errorString = error.c_str();
             Serial.printf("Failed to read file (%s), using default configuration\n", errorString);
             return false;
