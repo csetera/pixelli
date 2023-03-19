@@ -81,7 +81,7 @@ NetworkManager::NetworkManager() : webServer(80), wsSerial("/ws_serial") {
     DefaultHeaders::Instance().addHeader("Access-Control-Max-Age", "86400");
     DefaultHeaders::Instance().addHeader("Vary", "Accept-Encoding, Origin");
 
-    // @brief Handler implementation for receiving settings updates and
+    // Handler implementation for receiving settings updates and
     // passing them on to the SettingsManager.
     updateSettingsHandler = new AsyncCallbackJsonWebHandler("/api/settings", [this](AsyncWebServerRequest *request, JsonVariant &json) {
         Serial.println("Received Settings update request");

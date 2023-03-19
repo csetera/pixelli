@@ -58,6 +58,8 @@ bool SettingsManager::readSettings() {
  * @brief Clear all settings from EEPROM.
  */
 void SettingsManager::reset() {
+    newsColor = CRGB::White;
+
     if (wifiPassword != nullptr) {
         free(wifiPassword);
         wifiPassword = nullptr;
