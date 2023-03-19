@@ -17,13 +17,10 @@
 
   import { DeviceInfo } from '@/models/DeviceInfo';
   import { useTask } from 'vue-concurrency';
+  import { doGet } from '@/utils/network';
 
-  const url = import.meta.env.VITE_API_BASE ?
-    `${import.meta.env.VITE_API_BASE}/api/info` :
-    '/api/info';
-
-  const task = useTask(function*() {
-    const response = yield fetch(url);
+  const task = useTask(function*(signal: AbortSignal) {
+    const response = yield doGet('/api/info', signal);
     return response.json() as DeviceInfo;
   });
 

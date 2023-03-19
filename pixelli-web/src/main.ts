@@ -16,6 +16,10 @@ app.config.errorHandler = (err, instance, info) => {
   console.error(err, instance, info);
 }
 
+app.config.warnHandler = (msg, instance, trace) => {
+  console.warn(msg, instance, trace);
+}
+
 registerPlugins(app)
 
 app.mount('#app')

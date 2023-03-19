@@ -11,6 +11,17 @@
 #include "Utils.h"
 
 /**
+ * @brief Convert a CRGB structure into a hex color string,
+ * storing the result in the provided buffer.
+ *
+ * @param color
+ * @param buffer
+ */
+void Utils::crgbToHexColorString(CRGB color, char *buffer) {
+    sprintf(buffer, "#%02x%02x%02x", color.red, color.green, color.blue);
+}
+
+/**
  * @brief Format the build timestamp into the provided buffer.
  *
  * @param buffer
@@ -30,4 +41,18 @@ CRGB Utils::getRandomColor() {
     int s = rand() % 128 + 127;
 
     return CRGB(CHSV(h, s, 200));
+}
+
+/**
+ * @brief Convert a hex color string into a CRGB structure.
+ *
+ * @param colorString
+ * @return CRGB
+ */
+CRGB Utils::hexColorStringToCrgb(const char *colorString) {
+    uint32_t data = (colorString[0] == '#') ?
+        (uint32_t) strtol((colorString + 1), NULL, 16) :
+        (uint32_t) strtol(colorString, NULL, 16);
+
+    return CRGB(((data >> 16) & 0xFF), ((data >> 8) & 0xFF), ((data >> 0) & 0xFF));
 }

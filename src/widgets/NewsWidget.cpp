@@ -9,11 +9,13 @@
 
 #include <logging/Logger.h>
 #include <services/NewsService.h>
+#include <settings/SettingsManager.h>
 
 /**
  * @brief Start displaying this Widget, scheduling updates as necessary.
  */
 void NewsWidget::startDisplay() {
+    color = SettingsManager::get().getNewsColor();
     displayValue.clear();
 
     NewsService *newsService = (NewsService *) getService(NewsService::NAME);

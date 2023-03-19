@@ -17,9 +17,9 @@
         <v-card-text>
           <v-table>
             <tbody>
-              <tr v-for="key in keys" :key="key">
+              <tr v-for="(value, key) in props.values" :key="key">
                 <td width="20%">{{ key }}</td>
-                <td>{{ props.values[key] }}</td>
+                <td>{{ value }}</td>
               </tr>
             </tbody>
           </v-table>
@@ -30,12 +30,8 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed } from 'vue';
-
   const props = defineProps<{
     title: string,
     values: { [key: string]: any; }
   }>()
-
-  const keys = computed(() => Object.keys(props.values));
 </script>

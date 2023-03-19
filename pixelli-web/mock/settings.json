@@ -1,0 +1,31 @@
+{
+    "Category 1": [
+        {
+            "Name": "Number",
+            "Type": "number",
+            "Value": 23
+        },
+        {
+            "Name": "String",
+            "Type": "string",
+            "Value": "A string value"
+        }
+    ],
+    "Category 2": [
+        {
+            "Name": "Percent",
+            "Type": "percent",
+            "Value": 72
+        },
+        {
+            "Name": "Color",
+            "Type": "color",
+            "Value": "#5f00ff"
+        },
+        {
+            "Name": "Password",
+            "Type": "password",
+            "Value": "mypassw"
+        }
+    ]
+}

@@ -32,12 +32,11 @@
 #include <services/GeolocationService.h>
 #include <services/ServiceRegistry.h>
 
-#include <utils/SettingsManager.h>
+#include <settings/SettingsManager.h>
 #include <widgets/StaticTextWidget.h>
 
 Scheduler scheduler;
-SettingsManager settingsManager;
-NetworkManager networkManager(settingsManager);
+NetworkManager networkManager;
 
 /**
  * @brief Standard Arduino setup routine.  Called once.
@@ -54,7 +53,7 @@ void setup() {
         return;
     }
 
-    settingsManager.begin();
+    SettingsManager::get().readSettings();
     ServiceRegistry::get().init(&scheduler);
 
     DisplayManager &displayManager = DisplayManager::get();

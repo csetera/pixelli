@@ -116,7 +116,7 @@ void DisplayManager::init(Scheduler *scheduler) {
 
     // Wire up a listener for wifi connected to update the display status
     WiFi.onEvent([this](WiFiEvent_t event, WiFiEventInfo_t info) {
-        if (event == SYSTEM_EVENT_STA_CONNECTED) {
+        if (event == ARDUINO_EVENT_WIFI_STA_CONNECTED) {
             connectingWidget->displayComplete();
         }
     });

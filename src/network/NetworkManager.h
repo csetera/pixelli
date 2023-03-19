@@ -16,19 +16,17 @@
 #include <ESPAsyncTCP.h>
 #endif
 
+#include <AsyncJson.h>
 #include <DNSServer.h>
 #include <ESPAsyncWebServer.h>
-#include <utils/SettingsManager.h>
+#include <settings/SettingsManager.h>
 
 /**
  * @brief Separate the network management functionality
  */
 class NetworkManager {
 public:
-    NetworkManager(SettingsManager &settingsManager) :
-        settingsManager(settingsManager),
-        webServer(80),
-        wsSerial("/ws_serial") { }
+    NetworkManager();
 
     /**
      * @brief Start up the network.
@@ -51,21 +49,19 @@ public:
 
 private:
     static const long   maxConnectionWaitMillis = 30 * 1000;
-    SettingsManager&    settingsManager;
-    AsyncWebServer      webServer;
-    AsyncWebSocket      wsSerial;
 
-    double              lastLoggedOtaPercentage;
+    double                          lastLoggedOtaPercentage;
+    AsyncCallbackJsonWebHandler*    updateSettingsHandler;
+    AsyncWebServer                  webServer;
+    AsyncWebSocket                  wsSerial;
 
-    WiFiEventId_t       eventID;
 
+    void configureOTAUpdates();
+    void getSettings(AsyncWebServerRequest *request);
     void onWifiConnected();
     void onWifiDisconnected();
-
     void onWifiEvent(WiFiEvent_t event, WiFiEventInfo_t info);
     void registerHandlers();
-    void configureOTAUpdates();
-
     void smartConfig();
     bool waitForConnection();
 };
