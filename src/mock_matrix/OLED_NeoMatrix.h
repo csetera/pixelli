@@ -10,6 +10,30 @@
 #include <defaults.h>
 #include <Adafruit_NeoMatrix.h>
 #include <Arduino_GFX_Library.h>
+#include <stdint.h>
+
+#ifdef ENABLE_REMOTE_VIEWER
+    #include <ESPAsyncWebServer.h>
+
+    enum Command {
+        ON_CONNECT = 1,
+        SHOW = 2
+    };
+
+    #pragma pack(1)
+        struct OnConnectPacket {
+            uint8_t     command;
+            uint8_t     width;
+            uint8_t     height;
+        };
+
+        struct ShowScreenPacket {
+            uint8_t     command;
+            uint16_t    pixels[NUM_LEDS];
+        };
+    #pragma pack(0)
+
+#endif
 
 /**
  * @brief Wraps a SSD1351 display (eg https://www.amazon.com/gp/product/B07V579YK2/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1)
@@ -31,13 +55,25 @@ public:
     void    fillScreen(uint16_t color);
     void    show(void);
 
-private:
-    bool    inBounds(int16_t x, int16_t y);
+    #ifdef ENABLE_REMOTE_VIEWER
+        void setRemoteViewerSocket(AsyncWebSocket *remoteSocket);
+    #endif
 
+private:
     Arduino_DataBus         *databus;
     Arduino_GFX             *gfx;
     uint8_t                 errorCode;
     int                     height;
     int                     width;
     bool                    firstScreenClear;
+
+    bool    inBounds(int16_t x, int16_t y);
+
+    #ifdef ENABLE_REMOTE_VIEWER
+        AsyncWebSocket          *socket;
+        OnConnectPacket         onConnectPacket;
+        ShowScreenPacket        showScreenPacket;
+
+        bool isRemoteConnected();
+    #endif
 };

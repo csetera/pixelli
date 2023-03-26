@@ -11,6 +11,7 @@ import { isNavigationFailure } from 'vue-router'
 import DefaultLayout from '@/layouts/default/Default.vue';
 import Home from '@/views/Home.vue';
 import Info from '@/views/Info.vue';
+import RemoteViewer from '@/views/RemoteViewer.vue';
 import Settings from '@/views/Settings.vue';
 import NotFound from '@/components/utility/NotFound.vue';
 
@@ -44,6 +45,15 @@ const routes = [
         component: Info,
         meta: {
           icon: "mdi-information-outline",
+          navigable: true
+        },
+      },
+      {
+        path: 'remote-view',
+        name: 'Remote View',
+        component: RemoteViewer,
+        meta: {
+          icon: "mdi-binoculars",
           navigable: true
         },
       },

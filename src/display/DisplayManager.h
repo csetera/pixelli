@@ -8,6 +8,7 @@
 #pragma once
 
 #include <functional>
+#include <ESPAsyncWebServer.h>
 #include <FastLED.h>
 #include <TaskSchedulerDeclarations.h>
 #include <U8g2_for_Adafruit_GFX.h>
@@ -62,6 +63,13 @@ public:
      * @param scheduler
      */
     void init(Scheduler *scheduler);
+
+    /**
+     * @brief Set the Remote Viewer Socket object
+     *
+     * @param remoteSocket
+     */
+    void setRemoteViewerSocket(AsyncWebSocket *remoteSocket);
 
     /**
      * @brief Show the latest changes on the matrix

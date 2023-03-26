@@ -137,7 +137,14 @@ void DisplayManager::init(Scheduler *scheduler) {
  * @brief Show the latest changes on the matrix
  *
  */
-void DisplayManager::show() {
+void DisplayManager::setRemoteViewerSocket(AsyncWebSocket *remoteSocket) {
+#ifdef ENABLE_REMOTE_VIEWER
+    matrix.setRemoteViewerSocket(remoteSocket);
+#endif
+}
+
+void DisplayManager::show()
+{
     matrix.show();
 }
 

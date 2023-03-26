@@ -54,7 +54,7 @@ private:
     AsyncCallbackJsonWebHandler*    updateSettingsHandler;
     AsyncWebServer                  webServer;
     AsyncWebSocket                  wsSerial;
-
+    AsyncWebSocket                  wsRemote;
 
     void configureOTAUpdates();
     void getSettings(AsyncWebServerRequest *request);

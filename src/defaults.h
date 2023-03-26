@@ -59,3 +59,5 @@
 #ifndef MM_RST
     #define MM_RST 5
 #endif
+
+#define ENABLE_REMOTE_VIEWER

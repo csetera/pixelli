@@ -11,6 +11,7 @@
 #include <LittleFS.h>
 
 #include <defaults.h>
+#include <display/DisplayManager.h>
 #include <logging/Logger.h>
 #include <misc/Utils.h>
 
@@ -72,7 +73,7 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
     }
 }
 
-NetworkManager::NetworkManager() : webServer(80), wsSerial("/ws_serial") {
+NetworkManager::NetworkManager() : webServer(80), wsRemote("/ws_remote"), wsSerial("/ws_serial") {
     // CORS headers
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
@@ -366,6 +367,11 @@ void NetworkManager::registerHandlers() {
     // Serial over Websocket handling
     wsSerial.onEvent(onWsEvent);
     webServer.addHandler(&wsSerial);
+
+    #ifdef ENABLE_REMOTE_VIEWER
+        webServer.addHandler(&wsRemote);
+        DisplayManager::get().setRemoteViewerSocket(&wsRemote);
+    #endif
 
     // Catch all
     webServer.onNotFound([](AsyncWebServerRequest *request){
