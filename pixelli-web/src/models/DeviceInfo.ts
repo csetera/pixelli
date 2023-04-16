@@ -46,6 +46,7 @@ export interface FlashInfo {
 }
 
 export interface DeviceInfo {
+    Features: string[];
     General: GeneralInfo;
     Sketch: SketchInfo;
     Heap: HeapInfo;
