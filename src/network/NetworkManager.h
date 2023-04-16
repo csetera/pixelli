@@ -57,6 +57,7 @@ private:
     AsyncWebSocket                  wsRemote;
 
     void configureOTAUpdates();
+    void getInfo(AsyncWebServerRequest *request, bool featuresOnly = false);
     void getSettings(AsyncWebServerRequest *request);
     void onWifiConnected();
     void onWifiDisconnected();

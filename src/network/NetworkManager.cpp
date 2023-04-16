@@ -198,7 +198,7 @@ void NetworkManager::loop() {
  *
  * @param request
  */
-void getInfo(AsyncWebServerRequest *request) {
+void NetworkManager::getInfo(AsyncWebServerRequest *request, bool featuresOnly) {
     Logger::get().println("Received info request");
 
     char build_timestamp[FORMATTED_BUILD_TIMESTAMP_LENGTH];
@@ -208,35 +208,42 @@ void getInfo(AsyncWebServerRequest *request) {
     JsonVariant &root = response->getRoot();
     JsonObject obj = root.to<JsonObject>();
 
-    JsonObject general = obj.createNestedObject("General");
-    general["Build"] = build_timestamp;
-    general["IpAddr"] = WiFi.localIP();
-    general["SdkVersion"] = ESP.getSdkVersion();
+    JsonArray features = obj.createNestedArray("Features");
+    #ifdef ENABLE_REMOTE_VIEWER
+        features.add("RemoteView");
+    #endif
 
-    JsonObject sketch = obj.createNestedObject("Sketch");
-    sketch["Size"] = ESP.getSketchSize();
-    sketch["FreeSpace"] = ESP.getFreeSketchSpace();
+    if (!featuresOnly) {
+        JsonObject general = obj.createNestedObject("General");
+        general["Build"] = build_timestamp;
+        general["IpAddr"] = WiFi.localIP();
+        general["SdkVersion"] = ESP.getSdkVersion();
 
-    JsonObject heap = obj.createNestedObject("Heap");
-    heap["Size"] = ESP.getHeapSize(); //total heap size
-    heap["Free"] = ESP.getFreeHeap(); //available heap
-    heap["MinFree"] = ESP.getMinFreeHeap(); //lowest level of free heap since boot
-    heap["MaxAlloc"] = ESP.getMaxAllocHeap(); //largest block of heap that can be allocated at once
+        JsonObject sketch = obj.createNestedObject("Sketch");
+        sketch["Size"] = ESP.getSketchSize();
+        sketch["FreeSpace"] = ESP.getFreeSketchSpace();
 
-    JsonObject psram = obj.createNestedObject("Psram");
-    psram["Size"] = ESP.getPsramSize();
-    psram["Free"] = ESP.getFreePsram();
-    psram["MinFree"] = ESP.getMinFreePsram();
-    psram["MaxAlloc"] = ESP.getMaxAllocPsram();
+        JsonObject heap = obj.createNestedObject("Heap");
+        heap["Size"] = ESP.getHeapSize(); //total heap size
+        heap["Free"] = ESP.getFreeHeap(); //available heap
+        heap["MinFree"] = ESP.getMinFreeHeap(); //lowest level of free heap since boot
+        heap["MaxAlloc"] = ESP.getMaxAllocHeap(); //largest block of heap that can be allocated at once
 
-    JsonObject chip = obj.createNestedObject("Chip");
-    chip["Model"] = ESP.getChipModel();
-    chip["Revision"] = ESP.getChipRevision();
-    chip["Cores"] = ESP.getChipCores();
+        JsonObject psram = obj.createNestedObject("Psram");
+        psram["Size"] = ESP.getPsramSize();
+        psram["Free"] = ESP.getFreePsram();
+        psram["MinFree"] = ESP.getMinFreePsram();
+        psram["MaxAlloc"] = ESP.getMaxAllocPsram();
 
-    JsonObject flash = obj.createNestedObject("Flash");
-    flash["ChipSpeed"] = ESP.getFlashChipSpeed();
-    flash["ChipMode"] = ESP.getFlashChipMode();
+        JsonObject chip = obj.createNestedObject("Chip");
+        chip["Model"] = ESP.getChipModel();
+        chip["Revision"] = ESP.getChipRevision();
+        chip["Cores"] = ESP.getChipCores();
+
+        JsonObject flash = obj.createNestedObject("Flash");
+        flash["ChipSpeed"] = ESP.getFlashChipSpeed();
+        flash["ChipMode"] = ESP.getFlashChipMode();
+    }
 
     response->setLength();
     request->send(response);
@@ -349,7 +356,14 @@ void NetworkManager::registerHandlers() {
     webServer.addHandler(&corsPreflightHandler);
 
     // API endpoints
-    webServer.on("/api/info", getInfo);
+    webServer.on("/api/features", HTTP_GET, [this](AsyncWebServerRequest *request) {
+        Logger::get().println("Received get features request");
+        this->getInfo(request, true);
+    });
+    webServer.on("/api/info", HTTP_GET, [this](AsyncWebServerRequest *request) {
+        Logger::get().println("Received get info request");
+        this->getInfo(request);
+    });
     webServer.on("/api/networks", getNetworks);
     webServer.on("/api/settings", HTTP_GET, [this](AsyncWebServerRequest *request) {
         Logger::get().println("Received get settings request");
