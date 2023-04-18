@@ -16,10 +16,12 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed } from 'vue'
+  import { computed, onMounted, toRaw  } from 'vue'
   import { RouteRecord, useRouter } from 'vue-router'
+  import { useServerFeaturesStore } from '@/store/server-features-store';
 
   const router = useRouter();
+  const serverFeaturesStore = useServerFeaturesStore();
 
   /**
    * Simple wrapper class for interacting with a RouteRecord
@@ -43,12 +45,30 @@
     get path(): string {
       return (this.route.path) ? this.route.path : "";
     }
+
+    get requiresFeature(): string | undefined {
+      return this.route.meta.requiresFeature;
+    }
+
+    public isNavigable(serverFeatures: string[]): boolean {
+      if (!this.navigable) {
+        return false;
+      }
+
+      if (this.requiresFeature) {
+        return serverFeatures.includes(this.requiresFeature);
+      }
+
+      return true;
+    }
   }
 
   const routes = computed(() => {
+    const features = serverFeaturesStore.features;
+
     return router.getRoutes()
       .map((route) => new NavigableRoute(route))
-      .filter((route) => route.navigable);
+      .filter((route) => route.isNavigable(features));
   })
 
   /**
@@ -59,4 +79,8 @@
   function navigateTo(route: NavigableRoute) {
     router.push(route.path);
   }
+
+  onMounted(() => {
+    serverFeaturesStore.fetchFeatures();
+  });
 </script>
