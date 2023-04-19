@@ -76,6 +76,18 @@
     return result;
   })
 
+  function getWebsocketURL(): string | undefined {
+    if (!import.meta.env.VITE_API_BASE) {
+      return undefined;
+    }
+
+    const url = new URL(import.meta.env.VITE_API_BASE);
+    url.protocol = "ws:";
+    url.pathname = "/ws_remote";
+
+    return url.toString();
+  }
+
   /**
    * Handle the websocket close event
    */
@@ -129,17 +141,20 @@
    */
   onMounted(() => {
     // Connect the socket
-    const socket = new WebSocket("ws://pixelli_mock.local/ws_remote");
+    const socketURL = getWebsocketURL();
+    if (socketURL) {
+      const socket = new WebSocket(socketURL);
 
-    // Configure the socket
-    socket.binaryType = 'arraybuffer';
-    socket.onclose = handleClose;
-    socket.onerror = handleError;
-    socket.onopen = handleOpen;
-    socket.onmessage =  handleMessage;
+      // Configure the socket
+      socket.binaryType = 'arraybuffer';
+      socket.onclose = handleClose;
+      socket.onerror = handleError;
+      socket.onopen = handleOpen;
+      socket.onmessage =  handleMessage;
 
-    // Hold the websocket in reactive state
-    reactiveData.socket = socket;
+      // Hold the websocket in reactive state
+      reactiveData.socket = socket;
+    }
   })
 
   /**
