@@ -7,7 +7,16 @@
 #********************************************************************************  -->
 <template>
   <v-container class="fill-height">
-    <v-responsive class="d-flex align-center text-center fill-height">
+    <v-responsive v-if="data.error" class="d-flex align-center text-center">
+      <v-alert type="error" closable location="top center">Something went wrong</v-alert>
+    </v-responsive>
+
+    <v-responsive v-else-if="!receivedFirstBitmap" class="d-flex align-center text-center fill-height">
+      <h2 class="text-h3">Loading</h2>
+      <v-progress-circular :size="50" indeterminate />
+    </v-responsive>
+
+    <v-responsive v-else class="d-flex align-center text-center fill-height">
       <RemoteMatrix :height="height" :width="width" :colors="ledColors"/>
     </v-responsive>
   </v-container>
@@ -48,6 +57,7 @@
   /**
    * Reactive data
    */
+  const receivedFirstBitmap = ref(false);
   const height = ref(1);
   const width = ref(1);
   const reactiveData = reactive(data);
@@ -57,17 +67,14 @@
    * from the pixel values sent by the server.
    */
   const ledColors = computed<LEDColor[]>(() => {
-    let loggedOne = false;
     const result: LEDColor[] = [];
 
     if (reactiveData.pixelData) {
-      for (var i = 0; i < reactiveData.pixelData?.byteLength; i++) {
+      const pixelCount = reactiveData.pixelData?.byteLength / 2;
+
+      for (var i = 0; i < pixelCount; i++) {
         let rgb565 = reactiveData.pixelData[i];
         let cssColor = rgb565ToCssColor(rgb565);
-        if ((rgb565 != 0) && !loggedOne) {
-          loggedOne = true;
-          console.log("Color pixel", rgb565, cssColor);
-        }
 
         result.push(new LEDColor(i, cssColor));
       }
@@ -123,8 +130,8 @@
         break;
 
       case Commands.SHOW:
+        receivedFirstBitmap.value = true;
         reactiveData.pixelData = new Uint16Array(buffer.slice(1))
-        // console.log("show", reactiveData.pixelData);
         break;
     }
   }

@@ -51,6 +51,15 @@ const routes = [
         },
       },
       {
+        path: 'settings',
+        name: 'Settings',
+        component: Settings,
+        meta: {
+          icon: "mdi-cog-outline",
+          navigable: true
+        },
+      },
+      {
         path: 'remote-view',
         name: 'Remote View',
         component: RemoteViewer,
@@ -58,15 +67,6 @@ const routes = [
           icon: "mdi-binoculars",
           navigable: true,
           requiresFeature: 'RemoteView'
-        },
-      },
-      {
-        path: 'settings',
-        name: 'Settings',
-        component: Settings,
-        meta: {
-          icon: "mdi-cog-outline",
-          navigable: true
         },
       },
     ],
