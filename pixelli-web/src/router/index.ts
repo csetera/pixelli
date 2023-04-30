@@ -8,9 +8,11 @@
 import 'vue-router'
 import { createRouter, createWebHistory } from 'vue-router'
 import { isNavigationFailure } from 'vue-router'
+
 import DefaultLayout from '@/layouts/default/Default.vue';
 import Home from '@/views/Home.vue';
 import Info from '@/views/Info.vue';
+import RemoteViewer from '@/views/RemoteViewer.vue';
 import Settings from '@/views/Settings.vue';
 import NotFound from '@/components/utility/NotFound.vue';
 
@@ -21,6 +23,7 @@ declare module 'vue-router' {
   interface RouteMeta {
     icon?: string,
     navigable: boolean,
+    requiresFeature?: string,
   }
 }
 
@@ -54,6 +57,16 @@ const routes = [
         meta: {
           icon: "mdi-cog-outline",
           navigable: true
+        },
+      },
+      {
+        path: 'remote-view',
+        name: 'Remote View',
+        component: RemoteViewer,
+        meta: {
+          icon: "mdi-binoculars",
+          navigable: true,
+          requiresFeature: 'RemoteView'
         },
       },
     ],

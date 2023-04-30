@@ -7,8 +7,12 @@
  #*********************************************************************************/
 
 //
-// Typescript interfaces for API "info" response
+// Typescript interfaces for API "info" and "features" responses
 //
+export interface Features {
+  Features: string[];
+}
+
 export interface GeneralInfo {
   Build: Date;
   IpAddr: string;
@@ -46,6 +50,7 @@ export interface FlashInfo {
 }
 
 export interface DeviceInfo {
+    Features: string[];
     General: GeneralInfo;
     Sketch: SketchInfo;
     Heap: HeapInfo;

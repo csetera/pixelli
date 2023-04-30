@@ -7,17 +7,19 @@
 #********************************************************************************  -->
 
 <template>
-  <info-block title="General" :values="props.info.General" />
-  <info-block title="Chip" :values="props.info.Chip" />
-  <info-block title="Sketch" :values="props.info.Sketch" />
-  <info-block title="Heap" :values="props.info.Heap" />
-  <info-block title="Flash" :values="props.info.Flash" />
-  <info-block title="Pseudo Static RAM" :values="props.info.Psram" />
+  <array-info-block title="Features" :values="props.info.Features" />
+  <object-info-block title="General" :values="props.info.General" />
+  <object-info-block title="Chip" :values="props.info.Chip" />
+  <object-info-block title="Sketch" :values="props.info.Sketch" />
+  <object-info-block title="Heap" :values="props.info.Heap" />
+  <object-info-block title="Flash" :values="props.info.Flash" />
+  <object-info-block title="Pseudo Static RAM" :values="props.info.Psram" />
 </template>
 
 <script lang="ts" setup>
   import { DeviceInfo } from '@/models/DeviceInfo';
-  import InfoBlock from './InfoBlock.vue';
+  import ArrayInfoBlock from './ArrayInfoBlock.vue';
+  import ObjectInfoBlock from './ObjectInfoBlock.vue';
 
   const props = defineProps<{
     info: DeviceInfo
