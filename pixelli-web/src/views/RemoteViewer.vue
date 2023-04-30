@@ -7,24 +7,24 @@
 #********************************************************************************  -->
 <template>
   <v-container class="fill-height">
-    <v-responsive v-if="data.error" class="d-flex align-center text-center">
+    <v-responsive v-if="reactiveData.error" class="d-flex align-center text-center">
       <v-alert type="error" closable location="top center">Something went wrong</v-alert>
     </v-responsive>
 
-    <v-responsive v-else-if="!receivedFirstBitmap" class="d-flex align-center text-center fill-height">
-      <h2 class="text-h3">Loading</h2>
+    <v-responsive v-else-if="!reactiveData.receivedFirstBitmap" class="d-flex align-center text-center fill-height">
+      <h2 class="text-h3">{{  loadingMessage }}</h2>
       <v-progress-circular :size="50" indeterminate />
     </v-responsive>
 
     <v-responsive v-else class="d-flex align-center text-center fill-height">
-      <RemoteMatrix :height="height" :width="width" :colors="ledColors"/>
+      <RemoteMatrix :height="reactiveData.height" :width="reactiveData.width" :colors="ledColors"/>
     </v-responsive>
   </v-container>
 
 </template>
 
 <script lang="ts" setup>
-  import { computed, reactive, ref, onMounted, onUnmounted } from 'vue';
+  import { computed, reactive, onMounted, onUnmounted } from 'vue';
   import { rgb565ToCssColor } from '@/utils/colors';
   import LEDColor from '@/components/remote/LEDColor';
   import RemoteMatrix from '@/components/remote/Matrix.vue';
@@ -42,24 +42,27 @@
    */
   interface DataHolder {
     connected: boolean;
+    receivedFirstBitmap: boolean;
+    height: number;
+    width: number;
     pixelData?: Uint16Array,
     error?: any,
     socket?: WebSocket;
   }
 
   /**
-   * Initial non-reactive data
+   * Initial data
    */
   const data: DataHolder = {
-    connected: false
+    connected: false,
+    receivedFirstBitmap: false,
+    height: 1,
+    width: 1
   };
 
   /**
    * Reactive data
    */
-  const receivedFirstBitmap = ref(false);
-  const height = ref(1);
-  const width = ref(1);
   const reactiveData = reactive(data);
 
   /**
@@ -83,6 +86,27 @@
     return result;
   })
 
+  /**
+   * Compute a detailed loading message dependent on the status.
+   */
+  const loadingMessage = computed<string>(() => {
+    let message = 'Unknown';
+
+    if (!reactiveData.connected) {
+      message = 'Connecting...';
+    } else if (!reactiveData.receivedFirstBitmap) {
+      message = 'Connected. Waiting for first pixels...';
+    }
+
+    return message;
+  })
+
+  /**
+   * Calculate the URL for the remote viewer websocket.
+   * Calculated based on the API_BASE configuration value.
+   * In practice, this will generally be a mock matrix
+   * providing the socket.
+   */
   function getWebsocketURL(): string | undefined {
     if (!import.meta.env.VITE_API_BASE) {
       return undefined;
@@ -125,12 +149,12 @@
 
     switch (bytes[0]) {
       case Commands.ON_CONNECT:
-        width.value = bytes[1];
-        height.value = bytes[2];
+        reactiveData.width = bytes[1];
+        reactiveData.height = bytes[2];
         break;
 
       case Commands.SHOW:
-        receivedFirstBitmap.value = true;
+        reactiveData.receivedFirstBitmap = true;
         reactiveData.pixelData = new Uint16Array(buffer.slice(1))
         break;
     }

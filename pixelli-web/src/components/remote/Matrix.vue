@@ -5,6 +5,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at https://mozilla.org/MPL/2.0/.
 #********************************************************************************  -->
+
+<!-- A Grid layout representation of a Matrix with individual pixels -->
 <template>
   <div class="matrix" :style="matrixStyle">
     <LED v-for="ledColor in props.colors" :key="ledColor.index" :color="ledColor.color" />

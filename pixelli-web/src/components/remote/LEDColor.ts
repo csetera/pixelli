@@ -6,6 +6,7 @@
  # You can obtain one at https://mozilla.org/MPL/2.0/.
  #*********************************************************************************/
 
+ // Simple holder class for information to drive a single LED
 export default class LEDColor {
   constructor(public index: number, public color: string) {}
 }
