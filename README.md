@@ -23,7 +23,7 @@
 
 ## Introduction
 
-This repository provides the implemnetation of ESP32 software to drive an LED matrix built using 3D printed parts and WS2812B LED strips.
+This repository provides the implementation of ESP32 software to drive an LED matrix built using 3D printed parts and WS2812B LED strips.
 
 ## Feature overview
 
