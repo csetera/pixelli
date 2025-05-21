@@ -22,12 +22,34 @@
 
 #include <widgets/StaticTextWidget.h>
 
+#define TILE_PIXELS_X 16
+#define TILE_PIXELS_Y 16
+#define TILES_X 2
+#define TILES_Y 1
+#define PIXELS_X (TILE_PIXELS_X * TILES_X)
+#define PIXELS_Y (TILE_PIXELS_Y * TILES_Y)
+#define NUM_LEDS (PIXELS_X * PIXELS_Y)
+
+const uint8_t MatrixType =
+    // Single matrix configuration
+    NEO_MATRIX_ZIGZAG |
+    NEO_MATRIX_BOTTOM |
+    NEO_MATRIX_LEFT |
+    NEO_MATRIX_ROWS |
+
+    // Tiles Configuration
+    NEO_TILE_TOP |
+    NEO_TILE_LEFT |
+    NEO_TILE_ROWS |
+    NEO_TILE_SEQUENCE;
+
 #ifdef MOCK_MATRIX
     #include "mock_matrix/OLED_NeoMatrix.h"
     OLED_NeoMatrix matrix(MATRIX_WIDTH, MATRIX_HEIGHT);
 #else
     CRGB leds[NUM_LEDS];
-    FastLED_NeoMatrix matrix(leds, MATRIX_WIDTH, MATRIX_HEIGHT, MATRIX_TYPE);
+    // FastLED_NeoMatrix matrix(leds, MATRIX_WIDTH, MATRIX_HEIGHT, MATRIX_TYPE);
+    FastLED_NeoMatrix matrix(leds, TILE_PIXELS_X, TILE_PIXELS_Y, TILES_X, TILES_Y, MatrixType);
 #endif
 
 StaticTextWidget* connectingWidget;

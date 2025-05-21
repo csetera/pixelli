@@ -16,7 +16,7 @@
 #endif
 
 #ifndef MATRIX_HEIGHT
-  #define MATRIX_HEIGHT 8
+  #define MATRIX_HEIGHT 16
 #endif
 
 #ifndef MATRIX_WIDTH
