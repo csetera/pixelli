@@ -32,7 +32,7 @@ def webapp_copy_ignores(path, names):
 
 def build_webapp(*args, **kwargs):
     data_dir =  os.path.sep.join([ env['PROJECT_DIR'], "data", "webapp" ])
-    webapp_dir = os.path.sep.join([ env['PROJECT_DIR'], "pixelli-web" ])
+    webapp_dir = os.path.sep.join([ env['PROJECT_DIR'], "../pixelli-web" ])
     webapp_dist_dir = os.path.sep.join([webapp_dir, "dist"])
 
     print("Building the webapp from '{0}' into '{1}'".format(webapp_dir, data_dir))
