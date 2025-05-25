@@ -306,6 +306,7 @@ void NetworkManager::onWifiConnected() {
     }
 
     MDNS.addService("http", "tcp", 80);
+    MDNS.addServiceTxt("http", "tcp", "service", "pixelli");
     logger.println("mDNS responder started");
 
     ArduinoOTA.begin();
