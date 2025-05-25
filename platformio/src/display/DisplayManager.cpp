@@ -52,6 +52,7 @@ const uint8_t MatrixType =
     FastLED_NeoMatrix matrix(leds, TILE_PIXELS_X, TILE_PIXELS_Y, TILES_X, TILES_Y, MatrixType);
 #endif
 
+StaticTextWidget* blankWidget;
 StaticTextWidget* connectingWidget;
 StaticTextWidget* configuringWidget;
 StaticTextWidget* ntpWidget;
@@ -99,6 +100,23 @@ void DisplayManager::displayTime() {
 }
 
 /**
+ * @brief Determine whether the display should be enabled or not
+ */
+boolean DisplayManager::isDisplayEnabled() {
+    TimeService *timeService = (TimeService*) ServiceRegistry::get()[TimeService::NAME];
+
+    if (timeService->isTimeSet()) {
+        time_t now = time(nullptr);
+        struct tm *tm = localtime(&now);
+        auto hours = tm->tm_hour;
+
+        return (hours >= 6) && (hours <= 18);
+    } else {
+        return true;
+    }
+}
+
+/**
  * @brief Return the graphics interface
  *
  * @return Adafruit_GFX&
@@ -128,6 +146,7 @@ void DisplayManager::init(Scheduler *scheduler) {
     u8g2_for_adafruit_gfx.setFont(u8g2_font_bitcasual_tf);
 
     // Initialize the widgets to be displayed
+    blankWidget = new StaticTextWidget(scheduler, "", CRGB::Black);
     connectingWidget = new StaticTextWidget(scheduler, "CONN", CRGB::Red);
     configuringWidget = new StaticTextWidget(scheduler, "CFG", CRGB::Orange);
     ntpWidget = new StaticTextWidget(scheduler, "NTP", CRGB::Yellow);
@@ -165,8 +184,7 @@ void DisplayManager::setRemoteViewerSocket(AsyncWebSocket *remoteSocket) {
 #endif
 }
 
-void DisplayManager::show()
-{
+void DisplayManager::show() {
     matrix.show();
 }
 
@@ -185,44 +203,48 @@ void DisplayManager::widgetDisplayComplete() {
     TimeService *timeService = (TimeService*) ServiceRegistry::get()[TimeService::NAME];
     WeatherService *weatherService = (WeatherService*) ServiceRegistry::get()[WeatherService::NAME];
 
-    switch (displayState) {
-        case DisplayState::CONFIGURING:
-            if (timeService->isTimeSet()) {
+    if (isDisplayEnabled()) {
+        switch (displayState) {
+            case DisplayState::CONFIGURING:
+                if (timeService->isTimeSet()) {
+                    displayTime();
+                } else {
+                    displayState = DisplayState::NTP;
+                    ntpWidget->displayForSeconds(5);
+                }
+                break;
+
+            case DisplayState::CONNECTING:
+                displayState = DisplayState::CONFIGURING;
+                configuringWidget->startDisplay();
+                break;
+
+            case DisplayState::NEWS:
                 displayTime();
-            } else {
-                displayState = DisplayState::NTP;
-                ntpWidget->displayForSeconds(5);
-            }
-            break;
+                break;
 
-        case DisplayState::CONNECTING:
-            displayState = DisplayState::CONFIGURING;
-            configuringWidget->startDisplay();
-            break;
+            case DisplayState::NTP:
+                if (timeService->isTimeSet()) {
+                    displayTime();
+                } else {
+                    ntpWidget->displayForSeconds(5);
+                }
+                break;
 
-        case DisplayState::NEWS:
-            displayTime();
-            break;
+            case DisplayState::TEMP:
+                displayNews();
+                break;
 
-        case DisplayState::NTP:
-            if (timeService->isTimeSet()) {
-                displayTime();
-            } else {
-                ntpWidget->displayForSeconds(5);
-            }
-            break;
+            case DisplayState::TIME:
+                if (weatherService->isWeatherAvailable()) {
+                    displayTemp();
+                } else {
+                    displayTime();
+                }
 
-        case DisplayState::TEMP:
-            displayNews();
-            break;
-
-        case DisplayState::TIME:
-            if (weatherService->isWeatherAvailable()) {
-                displayTemp();
-            } else {
-                displayTime();
-            }
-
-            break;
+                break;
+        }
+    } else {
+        blankWidget->displayForSeconds(60);
     }
 }
