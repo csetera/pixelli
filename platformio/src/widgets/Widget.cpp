@@ -11,8 +11,8 @@
 #include <display/DisplayManager.h>
 #include <services/ServiceRegistry.h>
 
-const int16_t CENTER_X = MATRIX_WIDTH / 2;
-const int16_t CENTER_Y = MATRIX_HEIGHT / 2;
+const int16_t CENTER_X = PIXELS_X / 2;
+const int16_t CENTER_Y = PIXELS_Y / 2;
 
 /**
  * @brief Calculate the actual X coordinate taking into account
@@ -36,7 +36,7 @@ int16_t Widget::calculate_x(Widget &widget, int16_t x) {
             break;
 
         case Alignment::H_ALIGN_RIGHT:
-            calculated_x = MATRIX_WIDTH - extents.width;
+            calculated_x = PIXELS_X - extents.width;
             break;
 
         default:
@@ -69,7 +69,7 @@ int16_t Widget::calculate_y(Widget &widget, int16_t y) {
             break;
 
         case Alignment::V_ALIGN_BOTTOM:
-            calculated_y = MATRIX_HEIGHT - extents.height;
+            calculated_y = PIXELS_Y - extents.height;
             break;
 
         default:
@@ -77,7 +77,7 @@ int16_t Widget::calculate_y(Widget &widget, int16_t y) {
             break;
     }
 
-    return MATRIX_HEIGHT - calculated_y + 1;
+    return PIXELS_Y - calculated_y + 1;
 }
 
 /**

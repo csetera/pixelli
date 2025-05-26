@@ -20,6 +20,7 @@ namespace Utils {
      * @param buffer
      */
     void crgbToHexColorString(CRGB color, char *buffer);
+
     /**
      * @brief Format the build timestamp into the provided buffer.
      *
@@ -42,4 +43,8 @@ namespace Utils {
      */
     CRGB hexColorStringToCrgb(const char *colorString);
 
+    /**
+     * @brief Mask the contents of the source string into the destination string.
+     */
+    void mask_string(const char* source, char* destination, size_t dest_size);
 }

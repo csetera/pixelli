@@ -11,5 +11,10 @@
             "name": "Device Application",
             "path": "platformio"
         }
-    ]
+    ],
+    "settings": {
+        "files.associations": {
+            "random": "cpp"
+        }
+    }
 }

@@ -144,7 +144,11 @@ void NetworkManager::start() {
     const char *psk = settingsManager.getWifiPassword();
 
     if ((ssid != nullptr) && (psk != nullptr)) {
-        Serial.printf("Settings were intialized SSID: %s; Pass: %s\n", ssid, psk);
+        // Generate a masked PSK for logging purposes
+        char masked[64];
+        Utils::mask_string(psk, masked, 64);
+
+        Serial.printf("Settings were intialized SSID: %s; Pass: %s\n", ssid, masked);
         WiFi.begin(ssid, psk);
         if (!waitForConnection()) {
             smartConfig();
