@@ -20,6 +20,8 @@
 #include <services/TimeService.h>
 #include <services/WeatherService.h>
 
+#include <settings/SettingsManager.h>
+
 #include <widgets/StaticTextWidget.h>
 
 #ifdef MOCK_MATRIX
@@ -89,7 +91,10 @@ boolean DisplayManager::isDisplayEnabled() {
         struct tm *tm = localtime(&now);
         auto hours = tm->tm_hour;
 
-        return (hours >= 6) && (hours <= 18);
+        auto end = SettingsManager::get().getDisplaySleepEnd();
+        auto start = SettingsManager::get().getDisplaySleepStart();
+
+        return (hours >= end) && (hours <= start);
     } else {
         return true;
     }

@@ -5,6 +5,7 @@
 #include <string.h>
 #include <sys/stat.h>
 
+#include <logging/Logger.h>
 #include <misc/Utils.h>
 
 SettingsManager& SettingsManager::get() {
@@ -105,7 +106,6 @@ void SettingsManager::sendSettingsResponse(JsonVariant &root) {
     if ((wifiSSID != nullptr) || (wifiPassword != nullptr)) {
         auto wifiSettings = obj.createNestedArray(WIFI_SETTINGS);
         addDefinition(wifiSettings, "SSID", "string", wifiSSID);
-        addDefinition(wifiSettings, "Password", "password", wifiPassword);
     }
 }
 
