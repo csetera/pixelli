@@ -1,0 +1,20 @@
+{
+    "folders": [
+        {
+            "path": "docs"
+        },
+        {
+            "name": "Web Application",
+            "path": "pixelli-web"
+        },
+        {
+            "name": "Device Application",
+            "path": "platformio"
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "random": "cpp"
+        }
+    }
+}

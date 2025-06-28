@@ -119,4 +119,5 @@ private:
     void displayNews();
     void displayTemp();
     void displayTime();
+    boolean isDisplayEnabled();
 };

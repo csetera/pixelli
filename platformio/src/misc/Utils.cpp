@@ -56,3 +56,48 @@ CRGB Utils::hexColorStringToCrgb(const char *colorString) {
 
     return CRGB(((data >> 16) & 0xFF), ((data >> 8) & 0xFF), ((data >> 0) & 0xFF));
 }
+
+/**
+ * @brief Mask the contents of the source string into the destination string.
+ */
+void Utils::mask_string(const char* source, char* destination, size_t dest_size) {
+    // Check for null pointers
+    if (source == NULL || destination == NULL) {
+        if (destination != NULL && dest_size > 0) {
+            destination[0] = '\0';
+        }
+        return;
+    }
+    
+    size_t src_len = strnlen(source, dest_size);
+    
+    // Ensure destination buffer is large enough (including null terminator)
+    if (dest_size <= src_len) {
+        if (dest_size > 0) {
+            destination[0] = '\0';
+        }
+        return;
+    }
+    
+    // Handle strings with 4 or fewer characters - don't mask anything
+    if (src_len <= 4) {
+        strncpy(destination, source, dest_size);
+        return;
+    }
+    
+    // Copy first 2 characters
+    destination[0] = source[0];
+    destination[1] = source[1];
+    
+    // Mask middle characters with '*'
+    for (size_t i = 2; i < src_len - 2; i++) {
+        destination[i] = '*';
+    }
+    
+    // Copy last 2 characters
+    destination[src_len - 2] = source[src_len - 2];
+    destination[src_len - 1] = source[src_len - 1];
+    
+    // Null terminate
+    destination[src_len] = '\0';
+}

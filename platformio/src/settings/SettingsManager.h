@@ -25,6 +25,16 @@ public:
         return newsColor;
     }
 
+    uint8_t getDisplaySleepEnd() {
+        // TODO configurable
+        return 6;
+    }
+
+    uint8_t getDisplaySleepStart() {
+        // TODO configurable
+        return 18;
+    }
+
     /**
      * @brief Get the Wifi SSID
      *

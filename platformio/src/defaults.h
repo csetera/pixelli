@@ -9,21 +9,9 @@
 
 #include <FastLED_NeoMatrix.h>
 
-#define MATRIX_TYPE (NEO_MATRIX_BOTTOM + NEO_MATRIX_LEFT + NEO_MATRIX_ROWS + NEO_MATRIX_ZIGZAG)
-
 #ifndef DATA_PIN
   #define DATA_PIN 5
 #endif
-
-#ifndef MATRIX_HEIGHT
-  #define MATRIX_HEIGHT 8
-#endif
-
-#ifndef MATRIX_WIDTH
-  #define MATRIX_WIDTH 32
-#endif
-
-#define NUM_LEDS (MATRIX_WIDTH * MATRIX_HEIGHT)
 
 #ifndef MDNS_NAME
   #define MDNS_NAME "pixelli"
@@ -59,3 +47,9 @@
 #ifndef MM_RST
     #define MM_RST 5
 #endif
+
+// Pull in the definition of the matrix dynamically
+#define STRINGIFY(x) #x
+#define MAKE_STRING(x) STRINGIFY(x)
+
+#include MAKE_STRING(MATRIX_CONFIG.h) 

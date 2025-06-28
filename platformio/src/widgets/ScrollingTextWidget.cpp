@@ -49,7 +49,7 @@ void ScrollingTextWidget::startDisplay() {
     // Pause potentially long-running service tasks
     ServiceRegistry::get().pauseUpdates();
 
-    scrollOffset = MATRIX_WIDTH;
+    scrollOffset = PIXELS_X;
 
     scrollTask = new Task();
     scrollTask->setCallback(std::bind(&ScrollingTextWidget::scrollLoop, this));

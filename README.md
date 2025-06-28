@@ -35,7 +35,9 @@ This repository provides the implementation of ESP32 software to drive an LED ma
 *   IP Geolocation
 
 
-All 3D printed parts can be found on [Thingiverse](https://www.thingiverse.com/thing:5761343).  Look for a future Instructables write-up with the full build details.
+All 3D printed parts can be found on [Thingiverse](https://www.thingiverse.com/thing:5761343).  [Look here](https://www.instructables.com/Pixelli-3D-Printed-WS2812B-LED-Strip-Matrix/) for an Instructable covering this build.
+
+In addition, recent software versions support a slightly less DIY matrix constructued with [two WS2812B matrices](https://www.amazon.com/dp/B09XWQTZZN) and a [3D printed enclosure](https://www.printables.com/model/719024-16x32-led-matrix-frame-with-diffuser-grid). 
 
 ## Getting Started
 
@@ -91,6 +93,14 @@ There are currently three services required for the software to function:
 * [News API](https://newsapi.org/) <br/> To retrieve top news headlines
 
 Each service will require a registered API key in order to function.
+
+#### Matrix Configurations
+Matrix configurations are separated into their own header files and referenced via a define.  For example, the [32x16 matrix header file](platformio/src/16x32matrix.h) is referenced in the [platformio.io](platformio/platformio.ini) file via the build flags:
+
+```
+  build_flags =
+    -DMATRIX_CONFIG=16x32matrix
+```
 
 #### Environments
 
