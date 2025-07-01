@@ -10,6 +10,7 @@
 #include <ESPmDNS.h>
 #include <LittleFS.h>
 
+#include <compatibility.h>
 #include <defaults.h>
 #include <display/DisplayManager.h>
 #include <logging/Logger.h>
@@ -23,7 +24,7 @@
 #include <ESP8266WiFi.h>
 #endif
 
-#include "NetworkManager.h"
+#include "AppNetworkManager.h"
 
 /**
  * @brief A AsyncWebHandler implementation that handles CORS preflight
@@ -73,7 +74,7 @@ void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventTyp
     }
 }
 
-NetworkManager::NetworkManager() : webServer(80), wsRemote("/ws_remote"), wsSerial("/ws_serial") {
+AppNetworkManager::AppNetworkManager() : webServer(80), wsRemote("/ws_remote"), wsSerial("/ws_serial") {
     // CORS headers
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Origin", "*");
     DefaultHeaders::Instance().addHeader("Access-Control-Allow-Credentials", "true");
@@ -97,7 +98,7 @@ NetworkManager::NetworkManager() : webServer(80), wsRemote("/ws_remote"), wsSeri
  * See https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_smartconfig.html
  * for more information.
  */
-void NetworkManager::smartConfig() {
+void AppNetworkManager::smartConfig() {
     do {
         Serial.println("Starting SmartConfig");
         WiFi.beginSmartConfig();
@@ -125,7 +126,7 @@ void NetworkManager::smartConfig() {
 /**
  * @brief Start up configure the networking stack
  */
-void NetworkManager::start() {
+void AppNetworkManager::start() {
     // Calculate a unique hostname
     auto hostname = String("pixelli-");
     hostname.concat(String((unsigned long)ESP.getEfuseMac(), HEX));
@@ -167,7 +168,7 @@ void NetworkManager::start() {
  * @return true
  * @return false
  */
-bool NetworkManager::waitForConnection() {
+bool AppNetworkManager::waitForConnection() {
     long beginConnectionMillis = millis();
     long connectionAttemptMillis = 0;
 
@@ -193,7 +194,7 @@ bool NetworkManager::waitForConnection() {
 /**
  * @brief Handle the recurring loop.
  */
-void NetworkManager::loop() {
+void AppNetworkManager::loop() {
     ArduinoOTA.handle();
 }
 
@@ -202,7 +203,7 @@ void NetworkManager::loop() {
  *
  * @param request
  */
-void NetworkManager::getInfo(AsyncWebServerRequest *request, bool featuresOnly) {
+void AppNetworkManager::getInfo(AsyncWebServerRequest *request, bool featuresOnly) {
     Logger::get().println("Received info request");
 
     char build_timestamp[FORMATTED_BUILD_TIMESTAMP_LENGTH];
@@ -286,7 +287,7 @@ void getNetworks(AsyncWebServerRequest *request) {
  *
  * @param request The incoming reuquest information.
  */
-void NetworkManager::getSettings(AsyncWebServerRequest *request) {
+void AppNetworkManager::getSettings(AsyncWebServerRequest *request) {
     AsyncJsonResponse *response = new AsyncJsonResponse();
     JsonVariant &root = response->getRoot();
     SettingsManager::get().sendSettingsResponse(root);
@@ -298,7 +299,7 @@ void NetworkManager::getSettings(AsyncWebServerRequest *request) {
 /**
  * @brief Handler for Wifi connected events
  */
-void NetworkManager::onWifiConnected() {
+void AppNetworkManager::onWifiConnected() {
     Serial.println("onWifiConnected");
 
     Logger &logger = Logger::get();
@@ -319,7 +320,7 @@ void NetworkManager::onWifiConnected() {
 /**
  * @brief Handler for Wifi disconnected events
  */
-void NetworkManager::onWifiDisconnected() {
+void AppNetworkManager::onWifiDisconnected() {
     Serial.println("onWifiDisconnected");
 
     Logger &logger = Logger::get();
@@ -335,7 +336,7 @@ void NetworkManager::onWifiDisconnected() {
  * @param event
  * @param info
  */
-void NetworkManager::onWifiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
+void AppNetworkManager::onWifiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
     switch (event) {
         case SYSTEM_EVENT_STA_GOT_IP:
             onWifiConnected();
@@ -354,7 +355,7 @@ void NetworkManager::onWifiEvent(WiFiEvent_t event, WiFiEventInfo_t info) {
 /**
  * @brief Configure the web server
  */
-void NetworkManager::registerHandlers() {
+void AppNetworkManager::registerHandlers() {
     Serial.println("Registering web handlers");
 
     // CORS handling
@@ -401,7 +402,7 @@ void NetworkManager::registerHandlers() {
 /**
  * @brief Setup for OTA updates
  */
-void NetworkManager::configureOTAUpdates() {
+void AppNetworkManager::configureOTAUpdates() {
     Logger::get().println("Configuring OTA Updates");
 
     ArduinoOTA.setHostname(MDNS_NAME);

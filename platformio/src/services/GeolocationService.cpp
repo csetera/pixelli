@@ -7,8 +7,8 @@
  **********************************************************************************/
 #include "GeolocationService.h"
 
+#include <compatibility.h>
 #include <logging/Logger.h>
-#include <network/NetworkManager.h>
 #include <network/NetworkUtils.h>
 #include <misc/Utils.h>
 

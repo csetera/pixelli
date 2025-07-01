@@ -24,8 +24,8 @@
 
 #include <widgets/StaticTextWidget.h>
 
-#ifdef MOCK_MATRIX
-    #include "mock_matrix/OLED_NeoMatrix.h"
+#ifdef OLED_MATRIX
+    #include "oled_matrix/OLED_NeoMatrix.h"
     OLED_NeoMatrix matrix(PIXELS_X, PIXELS_Y);
 #else
     CRGB leds[NUM_LEDS];
@@ -115,7 +115,7 @@ Adafruit_GFX &DisplayManager::getGraphics() {
  * @param scheduler
  */
 void DisplayManager::init(Scheduler *scheduler) {
-#ifndef MOCK_MATRIX
+#ifndef OLED_MATRIX
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 #endif
     this->scheduler = scheduler;

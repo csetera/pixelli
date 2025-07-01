@@ -9,6 +9,7 @@
 
 #include <functional>
 
+#include <compatibility.h>
 #include <defaults.h>
 #include <logging/Logger.h>
 #include <network/NetworkUtils.h>

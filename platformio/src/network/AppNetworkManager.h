@@ -24,9 +24,9 @@
 /**
  * @brief Separate the network management functionality
  */
-class NetworkManager {
+class AppNetworkManager {
 public:
-    NetworkManager();
+    AppNetworkManager();
 
     /**
      * @brief Start up the network.

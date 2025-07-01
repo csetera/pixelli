@@ -10,6 +10,7 @@
 #include <string.h>
 #include <WiFi.h>
 
+#include <compatibility.h>
 #include <logging/Logger.h>
 #include "GeolocationService.h"
 #include "NewsService.h"
