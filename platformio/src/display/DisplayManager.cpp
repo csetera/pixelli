@@ -24,10 +24,24 @@
 
 #include <widgets/StaticTextWidget.h>
 
-#ifdef OLED_MATRIX
+#ifdef ESP32_QEMU
+    #include "qemu_matrix/QEMU_NeoMatrix.h"
+
+    #define LED_PIXEL_SIZE 20
+    #define GUTTER_PIXEL_SIZE 4
+    #define MATRIX_WIDTH 32
+    #define MATRIX_HEIGHT 16
+
+    #define WIDTH 800
+    #define HEIGHT 400
+
+    QEMU_NeoMatrix matrix(MATRIX_WIDTH, MATRIX_HEIGHT, LED_PIXEL_SIZE, GUTTER_PIXEL_SIZE);
+#elif OLED_MATRIX
     #include "oled_matrix/OLED_NeoMatrix.h"
     OLED_NeoMatrix matrix(PIXELS_X, PIXELS_Y);
 #else
+    #define USE_NEOPIXELS
+
     CRGB leds[NUM_LEDS];
     // FastLED_NeoMatrix matrix(leds, MATRIX_WIDTH, MATRIX_HEIGHT, MATRIX_TYPE);
     FastLED_NeoMatrix matrix(leds, TILE_PIXELS_X, TILE_PIXELS_Y, TILES_X, TILES_Y, MATRIX_LAYOUT);
@@ -115,7 +129,7 @@ Adafruit_GFX &DisplayManager::getGraphics() {
  * @param scheduler
  */
 void DisplayManager::init(Scheduler *scheduler) {
-#ifndef OLED_MATRIX
+#ifdef USE_NEOPIXELS
     FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
 #endif
     this->scheduler = scheduler;
@@ -156,16 +170,6 @@ void DisplayManager::init(Scheduler *scheduler) {
             }
         }
     });
-}
-
-/**
- * @brief Show the latest changes on the matrix
- *
- */
-void DisplayManager::setRemoteViewerSocket(AsyncWebSocket *remoteSocket) {
-#ifdef ENABLE_REMOTE_VIEWER
-    matrix.setRemoteViewerSocket(remoteSocket);
-#endif
 }
 
 void DisplayManager::show() {

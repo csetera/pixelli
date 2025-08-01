@@ -23,35 +23,26 @@
 #include <Wire.h>
 #include <misc/Utils.h>
 
-#ifndef ESP32_QEMU
 #include <defaults.h>
 #include <display/Alignment.h>
 #include <display/DisplayManager.h>
+#include <settings/SettingsManager.h>
+
+#ifndef ESP32_QEMU
 #include <logging/Logger.h>
 #include <network/AppNetworkManager.h>
 
 #include <services/GeolocationService.h>
 #include <services/ServiceRegistry.h>
 
-#include <settings/SettingsManager.h>
 #include <widgets/StaticTextWidget.h>
 #endif 
 
+Scheduler scheduler;
+
 #ifdef ESP32_QEMU
     #include "esp_task_wdt.h"
-    #include <qemu_matrix/QEMU_NeoMatrix.h>
-
-    #define LED_PIXEL_SIZE 20
-    #define GUTTER_PIXEL_SIZE 4
-    #define MATRIX_WIDTH 32
-    #define MATRIX_HEIGHT 16
-
-    #define WIDTH 800
-    #define HEIGHT 400
-
-    QEMU_NeoMatrix qemu_matrix(MATRIX_WIDTH, MATRIX_HEIGHT, LED_PIXEL_SIZE, GUTTER_PIXEL_SIZE);
-#else
-Scheduler scheduler;
+#elif
 AppNetworkManager networkManager;
 #endif
 
@@ -78,24 +69,22 @@ void setup() {
     Utils::formatBuildTimestamp(build_timestamp);
     Serial.printf("Starting version built: %s\n", build_timestamp);
 
-    #ifdef ESP32_QEMU
-    qemu_matrix.begin();
-    #else
+    /*
     if (!LittleFS.begin(true)) {
         Serial.println("An Error has occurred while mounting LittleFS");
         return;
     }
+    */
 
     SettingsManager::get().readSettings();
-    ServiceRegistry::get().init(&scheduler);
+    // ServiceRegistry::get().init(&scheduler);
 
     DisplayManager &displayManager = DisplayManager::get();
     displayManager.init(&scheduler);
     displayManager.clear();
     displayManager.startDisplay();
 
-    networkManager.start();
-    #endif
+    // networkManager.start();
 }
 
 /**
@@ -103,12 +92,15 @@ void setup() {
  */
 void loop() {
     #ifdef ESP32_QEMU
-    for (int y = 0; y < MATRIX_HEIGHT; y++) {
-        for (int x = 0; x < MATRIX_WIDTH; x++) {
-            qemu_matrix.startWrite();
-            qemu_matrix.clear();
-            qemu_matrix.drawPixel(x, y, RGB565_RED);
-            qemu_matrix.endWrite();
+    DisplayManager &displayManager = DisplayManager::get();
+    Adafruit_GFX &gfx = displayManager.getGraphics();
+
+    for (int y = 0; y < gfx.height(); y++) {
+        for (int x = 0; x < gfx.width(); x++) {
+            gfx.startWrite();
+            gfx.fillScreen(0);
+            gfx.drawPixel(x, y, 0B1111100000000000);
+            gfx.endWrite();
 
             delay(100);
         }

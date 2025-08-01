@@ -14,7 +14,10 @@
     ],
     "settings": {
         "files.associations": {
-            "random": "cpp"
+            "random": "cpp",
+            "bitset": "cpp",
+            "algorithm": "cpp",
+            "format": "cpp"
         }
     }
 }

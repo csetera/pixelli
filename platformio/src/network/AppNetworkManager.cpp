@@ -214,10 +214,6 @@ void AppNetworkManager::getInfo(AsyncWebServerRequest *request, bool featuresOnl
     JsonObject obj = root.to<JsonObject>();
 
     JsonArray features = obj.createNestedArray("Features");
-    #ifdef ENABLE_REMOTE_VIEWER
-        features.add("RemoteView");
-    #endif
-
     if (!featuresOnly) {
         JsonObject general = obj.createNestedObject("General");
         general["Build"] = build_timestamp;
@@ -387,11 +383,6 @@ void AppNetworkManager::registerHandlers() {
     // Serial over Websocket handling
     wsSerial.onEvent(onWsEvent);
     webServer.addHandler(&wsSerial);
-
-    #ifdef ENABLE_REMOTE_VIEWER
-        webServer.addHandler(&wsRemote);
-        DisplayManager::get().setRemoteViewerSocket(&wsRemote);
-    #endif
 
     // Catch all
     webServer.onNotFound([](AsyncWebServerRequest *request){
