@@ -11,13 +11,6 @@
 #include <stdint.h>
 #include <qemu_matrix/QEMU_GFX.h>
 
-/*
-#define LED_PIXEL_SIZE 10
-#define GUTTER_PIXEL_SIZE 2
-#define MATRIX_WIDTH 32
-#define MATRIX_HEIGHT 16
-*/
-
 #define TOTAL_PIXELS(led_count, led_size, gutter_size) \
     ((led_count) * (led_size) + ((led_count) - 1) * (gutter_size))
 

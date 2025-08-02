@@ -29,23 +29,23 @@
 
 // Mock Matrix SPI Configuration
 #ifndef MM_CS
-    #define MM_CS 17
+    #define MM_CS 10
 #endif
 
 #ifndef MM_DC
-    #define MM_DC 16
+    #define MM_DC 46
 #endif
 
 #ifndef MM_MOSI
-    #define MM_MOSI 23
+    #define MM_MOSI 11
 #endif
 
 #ifndef MM_SCLK
-    #define MM_SCLK 18
+    #define MM_SCLK 12
 #endif
 
 #ifndef MM_RST
-    #define MM_RST 5
+    #define MM_RST 3
 #endif
 
 // Pull in the definition of the matrix dynamically

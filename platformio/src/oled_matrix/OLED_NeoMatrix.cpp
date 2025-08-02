@@ -9,7 +9,7 @@
 
 void OLED_NeoMatrix::begin(int32_t speed) {
     gfx->begin(speed);
-    gfx->setRotation(3);
+    gfx->setRotation(0);
 }
 
 void OLED_NeoMatrix::clear(void) {

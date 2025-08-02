@@ -41,6 +41,8 @@ void BaseTextWidget::displayForSeconds(int numSeconds) {
  */
 void BaseTextWidget::drawText(int16_t x, int16_t y, String text) {
     U8G2_FOR_ADAFRUIT_GFX &u8g2_for_adafruit_gfx = DisplayManager::get().getFontGraphics();
+    
+    DisplayManager::get().startWrite();
     DisplayManager::get().clear();
 
     auto color565 = FastLED_NeoMatrix::Color24to16(FastLED_NeoMatrix::CRGBtoint32(color));

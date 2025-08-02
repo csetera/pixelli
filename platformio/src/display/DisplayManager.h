@@ -83,6 +83,11 @@ public:
     void startDisplay();
 
     /**
+     * Start an update operation.
+     */
+    virtual void startWrite(void);
+
+    /**
      * @brief Csllback from the Widget that it has completed display and
      * is handing control back to the DisplayManager.
      */

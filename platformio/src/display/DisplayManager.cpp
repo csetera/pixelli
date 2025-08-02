@@ -32,9 +32,6 @@
     #define MATRIX_WIDTH 32
     #define MATRIX_HEIGHT 16
 
-    #define WIDTH 800
-    #define HEIGHT 400
-
     QEMU_NeoMatrix matrix(MATRIX_WIDTH, MATRIX_HEIGHT, LED_PIXEL_SIZE, GUTTER_PIXEL_SIZE);
 #elif OLED_MATRIX
     #include "oled_matrix/OLED_NeoMatrix.h"
@@ -174,6 +171,10 @@ void DisplayManager::init(Scheduler *scheduler) {
 
 void DisplayManager::show() {
     matrix.show();
+}
+
+void DisplayManager::startWrite(void) {
+    matrix.startWrite();
 }
 
 /**

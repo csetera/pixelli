@@ -11,7 +11,6 @@ void QEMU_NeoMatrix::begin(int32_t speed) {
     gfx.begin();
 }
 
-
 void QEMU_NeoMatrix::startWrite() {
     gfx.startWrite();
 }
@@ -42,4 +41,5 @@ bool QEMU_NeoMatrix::inBounds(int16_t x, int16_t y) {
 }
 
 void QEMU_NeoMatrix::show() {
+    gfx.endWrite();
 }

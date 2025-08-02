@@ -34,17 +34,16 @@
 
 #include <services/GeolocationService.h>
 #include <services/ServiceRegistry.h>
-
 #include <widgets/StaticTextWidget.h>
 #endif 
 
-Scheduler scheduler;
-
 #ifdef ESP32_QEMU
     #include "esp_task_wdt.h"
-#elif
+#else
 AppNetworkManager networkManager;
 #endif
+
+Scheduler scheduler;
 
 /**
  * @brief Standard Arduino setup routine.  Called once.
@@ -69,29 +68,34 @@ void setup() {
     Utils::formatBuildTimestamp(build_timestamp);
     Serial.printf("Starting version built: %s\n", build_timestamp);
 
-    /*
+    #ifndef ESP32_QEMU
     if (!LittleFS.begin(true)) {
         Serial.println("An Error has occurred while mounting LittleFS");
         return;
     }
-    */
+    #endif
 
     SettingsManager::get().readSettings();
-    // ServiceRegistry::get().init(&scheduler);
+
+    #ifndef ESP32_QEMU
+    ServiceRegistry::get().init(&scheduler);
+    #endif
 
     DisplayManager &displayManager = DisplayManager::get();
     displayManager.init(&scheduler);
     displayManager.clear();
     displayManager.startDisplay();
 
-    // networkManager.start();
+    #ifndef ESP32_QEMU
+    //networkManager.start();
+    #endif
 }
 
 /**
  * @brief Standard Arduino method called repeatedly
  */
 void loop() {
-    #ifdef ESP32_QEMU
+    // #ifdef ESP32_QEMU
     DisplayManager &displayManager = DisplayManager::get();
     Adafruit_GFX &gfx = displayManager.getGraphics();
 
@@ -105,8 +109,10 @@ void loop() {
             delay(100);
         }
     }
+    /*
     #else
     networkManager.loop();
     scheduler.execute();
     #endif
+    */
 }
