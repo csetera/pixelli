@@ -63,7 +63,7 @@ def start_qemu_emulator(source, target, env):
         'qemu-system-xtensa',
         '-machine', build_mcu,
         "-drive", f"file={flash_image},if=mtd,format=raw",
-        '-display', 'gtk',
+        # '-display', 'gtk',
         '-serial', 'stdio',
         '-d', 'guest_errors',
     ]

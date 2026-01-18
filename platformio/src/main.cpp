@@ -28,74 +28,48 @@
 #include <display/DisplayManager.h>
 #include <settings/SettingsManager.h>
 
-#ifndef ESP32_QEMU
 #include <logging/Logger.h>
 #include <network/AppNetworkManager.h>
 
 #include <services/GeolocationService.h>
 #include <services/ServiceRegistry.h>
 #include <widgets/StaticTextWidget.h>
-#endif 
 
-#ifdef ESP32_QEMU
-    #include "esp_task_wdt.h"
-#else
 AppNetworkManager networkManager;
-#endif
-
 Scheduler scheduler;
 
 /**
  * @brief Standard Arduino setup routine.  Called once.
  */
 void setup() {
-    #ifdef ESP32_QEMU
-        // Give QEMU cache time to stabilize
-        delay(100);
-    #endif
-
     Serial.begin(115200);
-
-    #ifdef ESP32_QEMU
-        // Disable watchdogs that might interfere
-        esp_task_wdt_deinit();
-        
-        // Explicit yield to ensure cache coherency
-        yield();
-    #endif
+    Serial.println("Setting up...");
 
     char build_timestamp[FORMATTED_BUILD_TIMESTAMP_LENGTH];
     Utils::formatBuildTimestamp(build_timestamp);
     Serial.printf("Starting version built: %s\n", build_timestamp);
+    Serial.flush();
 
-    #ifndef ESP32_QEMU
+    /*
     if (!LittleFS.begin(true)) {
         Serial.println("An Error has occurred while mounting LittleFS");
         return;
     }
-    #endif
-
+*
     SettingsManager::get().readSettings();
+    */
 
-    #ifndef ESP32_QEMU
     ServiceRegistry::get().init(&scheduler);
-    #endif
-
     DisplayManager &displayManager = DisplayManager::get();
     displayManager.init(&scheduler);
     displayManager.clear();
     displayManager.startDisplay();
-
-    #ifndef ESP32_QEMU
-    //networkManager.start();
-    #endif
 }
 
 /**
  * @brief Standard Arduino method called repeatedly
  */
 void loop() {
-    // #ifdef ESP32_QEMU
     DisplayManager &displayManager = DisplayManager::get();
     Adafruit_GFX &gfx = displayManager.getGraphics();
 
@@ -113,6 +87,7 @@ void loop() {
     #else
     networkManager.loop();
     scheduler.execute();
-    #endif
+   Serial.println("Loop");
+   delay(1000);
     */
 }

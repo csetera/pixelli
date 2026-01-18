@@ -7,15 +7,17 @@
 #*********************************************************************************/
 
 Import("env")
+import pprint
 import subprocess
 
-MKFSTOOL='/bin/x86_64-linux-gnu-mklittlefs/mklittlefs'
+platform = env.PioPlatform() # type: ignore
+MKFSTOOL_DIR = platform.get_package_dir("tool-mklittlefs")
+MKFSTOOL = f'{MKFSTOOL_DIR}/mklittlefs'
 
 def build_littlefs_image(*args, **kwargs):
-    tool = f'{env.get("PROJECT_DIR")}{MKFSTOOL}'
-    spiffs_target = f'{env.get("PROJECT_DIR")}/.pio/build/{env.get("PIOENV")}/{env.get("ESP32_SPIFFS_IMAGE_NAME")}.bin'
+    spiffs_target = f'{env.get("PROJECT_DIR")}/.pio/build/{env.get("PIOENV")}/littlefs.bin'
     print(f'Building LittleFS filesystem image into: {spiffs_target}...')
-    subprocess.run([ tool, "--create", "data", spiffs_target ], cwd = env.get("PROJECT_DIR"))
+    subprocess.run([ MKFSTOOL, "--create", "data", '--size', '3538944', spiffs_target ], cwd = env.get("PROJECT_DIR"))
     return
 
 #

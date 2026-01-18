@@ -1,5 +1,5 @@
 /**********************************************************************************
- * Copyright (C) 2023 Craig Setera
+ * Copyright (C) 2023-2025 Craig Setera
  *
  * This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
@@ -12,16 +12,24 @@
 #include <Arduino_GFX_Library.h>
 #include <stdint.h>
 
+#if defined(USE_SSD1351)
+  typedef Arduino_SSD1351 Arduino_Display_Type;
+#elif defined(USE_ILI9341)
+  typedef Arduino_ILI9341 Arduino_Display_Type;
+#else
+  #error "No display type defined"
+#endif
+
 /**
- * @brief Wraps a SSD1351 display (eg https://www.amazon.com/gp/product/B07V579YK2/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1)
+ * @brief Wraps an SPI-attached display (eg https://www.amazon.com/gp/product/B07V579YK2/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&th=1)
  * to act like a Neopixel matrix for testing purposes.
  */
-class OLED_NeoMatrix : public Adafruit_NeoMatrix {
+class SPI_Display_NeoMatrix : public Adafruit_NeoMatrix {
 public:
-    OLED_NeoMatrix(int w, int h) :
+    SPI_Display_NeoMatrix(int w, int h) :
         Adafruit_NeoMatrix(w, h),
-        databus(new Arduino_ESP32SPI(MM_DC, MM_CS, MM_SCLK, MM_MOSI)),
-        gfx(new Arduino_SSD1351(databus, MM_RST)),
+        databus(new Arduino_ESP32SPI(SPI_DISP_DC, SPI_DISP_CS, SPI_DISP_SCLK, SPI_DISP_MOSI, SPI_DISP_MISO)),
+        gfx(new Arduino_Display_Type(databus, SPI_DISP_RST)),
         height(h),
         width(w),
         firstScreenClear(true) {}

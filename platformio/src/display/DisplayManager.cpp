@@ -24,18 +24,9 @@
 
 #include <widgets/StaticTextWidget.h>
 
-#ifdef ESP32_QEMU
-    #include "qemu_matrix/QEMU_NeoMatrix.h"
-
-    #define LED_PIXEL_SIZE 20
-    #define GUTTER_PIXEL_SIZE 4
-    #define MATRIX_WIDTH 32
-    #define MATRIX_HEIGHT 16
-
-    QEMU_NeoMatrix matrix(MATRIX_WIDTH, MATRIX_HEIGHT, LED_PIXEL_SIZE, GUTTER_PIXEL_SIZE);
-#elif OLED_MATRIX
-    #include "oled_matrix/OLED_NeoMatrix.h"
-    OLED_NeoMatrix matrix(PIXELS_X, PIXELS_Y);
+#ifdef SPI_ATTACHED_MATRIX
+    #include "spi_display_matrix/SPI_Display_NeoMatrix.h"
+    SPI_Display_NeoMatrix matrix(PIXELS_X, PIXELS_Y);
 #else
     #define USE_NEOPIXELS
 
@@ -181,7 +172,11 @@ void DisplayManager::startWrite(void) {
  * @brief Start the display task.
  */
 void DisplayManager::startDisplay() {
+    #ifdef WOKWI
+    configuringWidget->startDisplay();
+    #else
     connectingWidget->startDisplay();
+    #endif
 }
 
 /**

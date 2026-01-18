@@ -140,24 +140,26 @@ void AppNetworkManager::start() {
     registerHandlers();
     configureOTAUpdates();
 
-    SettingsManager &settingsManager = SettingsManager::get();
-    const char *ssid = settingsManager.getWifiSSID();
-    const char *psk = settingsManager.getWifiPassword();
+    #ifndef WOKWI
+        SettingsManager &settingsManager = SettingsManager::get();
+        const char *ssid = settingsManager.getWifiSSID();
+        const char *psk = settingsManager.getWifiPassword();
 
-    if ((ssid != nullptr) && (psk != nullptr)) {
-        // Generate a masked PSK for logging purposes
-        char masked[64];
-        Utils::mask_string(psk, masked, 64);
+        if ((ssid != nullptr) && (psk != nullptr)) {
+            // Generate a masked PSK for logging purposes
+            char masked[64];
+            Utils::mask_string(psk, masked, 64);
 
-        Serial.printf("Settings were intialized SSID: %s; Pass: %s\n", ssid, masked);
-        WiFi.begin(ssid, psk);
-        if (!waitForConnection()) {
+            Serial.printf("Settings were intialized SSID: %s; Pass: %s\n", ssid, masked);
+            WiFi.begin(ssid, psk);
+            if (!waitForConnection()) {
+                smartConfig();
+            }
+        } else {
             smartConfig();
         }
-    } else {
-        smartConfig();
-    }
-
+    #endif
+    
     webServer.begin();
 }
 
