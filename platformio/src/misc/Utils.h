@@ -22,13 +22,6 @@ namespace Utils {
     void crgbToHexColorString(CRGB color, char *buffer);
 
     /**
-     * @brief Format the build timestamp into the provided buffer.
-     *
-     * @param buffer
-     */
-    void formatBuildTimestamp(char* buffer);
-
-    /**
      * @brief Return a random color
      *
      * @return CRGB

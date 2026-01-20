@@ -22,16 +22,6 @@ void Utils::crgbToHexColorString(CRGB color, char *buffer) {
 }
 
 /**
- * @brief Format the build timestamp into the provided buffer.
- *
- * @param buffer
- */
-void Utils::formatBuildTimestamp(char* buffer) {
-    time_t timestamp = BUILD_TIMESTAMP;
-    strftime(buffer, FORMATTED_BUILD_TIMESTAMP_LENGTH, "%Y-%m-%dT%H:%M:%SZ", localtime(&timestamp));
-}
-
-/**
  * @brief Return a random color
  *
  * @return CRGB

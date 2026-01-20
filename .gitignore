@@ -7,3 +7,4 @@
 config.ini
 
 data/webapp/
+platformio/src/build_info.h

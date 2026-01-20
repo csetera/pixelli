@@ -35,6 +35,8 @@
 #include <services/ServiceRegistry.h>
 #include <widgets/StaticTextWidget.h>
 
+#include "build_info.h"
+
 AppNetworkManager networkManager;
 Scheduler scheduler;
 
@@ -43,11 +45,8 @@ Scheduler scheduler;
  */
 void setup() {
     Serial.begin(115200);
-    Serial.println("Setting up...");
 
-    char build_timestamp[FORMATTED_BUILD_TIMESTAMP_LENGTH];
-    Utils::formatBuildTimestamp(build_timestamp);
-    Serial.printf("Starting version built: %s\n", build_timestamp);
+    Serial.printf("Starting version built: %s\n", BUILD_TIMESTAMP_STR);
     Serial.flush();
 
     /*
@@ -64,12 +63,15 @@ void setup() {
     displayManager.init(&scheduler);
     displayManager.clear();
     displayManager.startDisplay();
+
+    networkManager.start();
 }
 
 /**
  * @brief Standard Arduino method called repeatedly
  */
 void loop() {
+    /*
     DisplayManager &displayManager = DisplayManager::get();
     Adafruit_GFX &gfx = displayManager.getGraphics();
 
@@ -85,9 +87,15 @@ void loop() {
     }
     /*
     #else
+    */
+   Serial.println("Loop Start");
+   Serial.flush();
+
     networkManager.loop();
     scheduler.execute();
-   Serial.println("Loop");
+   
+   Serial.println("Loop delay");
+   Serial.flush();
+
    delay(1000);
-    */
 }

@@ -16,6 +16,8 @@
 #include <logging/Logger.h>
 #include <misc/Utils.h>
 
+#include "build_info.h"
+
 #ifdef ESP32
 // https://docs.espressif.com/projects/arduino-esp32/en/latest/api/wifi.html
 #include <WiFi.h>
@@ -132,7 +134,10 @@ void AppNetworkManager::start() {
     hostname.concat(String((unsigned long)ESP.getEfuseMac(), HEX));
     WiFi.setHostname(hostname.c_str());
 
+    #ifndef WOKWI
     WiFi.mode(WIFI_STA);
+    #endif
+    
     WiFi.onEvent([this](WiFiEvent_t event, WiFiEventInfo_t info) {
         this->onWifiEvent(event, info);
     });
@@ -208,9 +213,6 @@ void AppNetworkManager::loop() {
 void AppNetworkManager::getInfo(AsyncWebServerRequest *request, bool featuresOnly) {
     Logger::get().println("Received info request");
 
-    char build_timestamp[FORMATTED_BUILD_TIMESTAMP_LENGTH];
-    Utils::formatBuildTimestamp(build_timestamp);
-
     AsyncJsonResponse *response = new AsyncJsonResponse();
     JsonVariant &root = response->getRoot();
     JsonObject obj = root.to<JsonObject>();
@@ -218,7 +220,7 @@ void AppNetworkManager::getInfo(AsyncWebServerRequest *request, bool featuresOnl
     JsonArray features = obj.createNestedArray("Features");
     if (!featuresOnly) {
         JsonObject general = obj.createNestedObject("General");
-        general["Build"] = build_timestamp;
+        general["Build"] = BUILD_TIMESTAMP_STR;
         general["IpAddr"] = WiFi.localIP();
         general["SdkVersion"] = ESP.getSdkVersion();
 
