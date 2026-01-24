@@ -143,9 +143,19 @@ void AppNetworkManager::start() {
     });
 
     registerHandlers();
-    configureOTAUpdates();
 
     #ifndef WOKWI
+    configureOTAUpdates();
+    #endif
+    
+    #ifdef WOKWI
+        WiFi.begin("Wokwi-GUEST", "", 6);
+        while (WiFi.status() != WL_CONNECTED) {
+            delay(100);
+            Serial.print(".");
+        }
+        Serial.println(" Connected!");
+    #else
         SettingsManager &settingsManager = SettingsManager::get();
         const char *ssid = settingsManager.getWifiSSID();
         const char *psk = settingsManager.getWifiPassword();

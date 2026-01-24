@@ -19,25 +19,9 @@
 #include <ESP8266WiFi.h>
 #endif
 
-/**
- * @brief Return a WIFiClient taking into account whether the
- * URL is http or https.
- *
- * @param url
- * @return WiFiClient*
- */
-WiFiClient* getWifiClient(String& url) {
-    if (url.startsWith("https:")) {
-        WiFiClientSecure* client = new WiFiClientSecure();
-
-        // Disable certificate validation
-        client->setInsecure();
-
-        return client;
-    } else {
-        return new WiFiClient();
-    }
-}
+static WiFiClient wifiClientPlain;
+static WiFiClientSecure wifiClientSecure;
+static SemaphoreHandle_t clientMutex = xSemaphoreCreateMutex();
 
 /**
  * @brief Retrieve a payload from the specified URL.
@@ -46,14 +30,25 @@ WiFiClient* getWifiClient(String& url) {
  * @param receiver
  */
 void NetworkUtils::httpGet(String& url, StreamReceiver receiver) {
-    WiFiClient* client = getWifiClient(url);
+    xSemaphoreTake(clientMutex, portMAX_DELAY); 
+
+    WiFiClient* wifiClient = nullptr;
+    if (url.startsWith("https:")) {
+        wifiClient = &wifiClientSecure;
+        wifiClientSecure.setInsecure();
+    } else {
+        wifiClient = &wifiClientPlain;
+    }
 
     // Set up the REST client to make it easy to handle JSON
     HTTPClient http;
     http.useHTTP10(true);
 
     // Set up the REST call
-    http.begin(*client, url);
+     if (!http.begin(*wifiClient, url)) {
+        xSemaphoreGive(clientMutex);
+        return;
+    }
 
     // Make the REST call
     Logger::get().println("Executing GET request");
@@ -63,6 +58,6 @@ void NetworkUtils::httpGet(String& url, StreamReceiver receiver) {
     receiver(httpResponseCode, http.getStream());
 
     http.end();
-    client->stop();
-    delete(client);
+    wifiClient->stop();
+    xSemaphoreGive(clientMutex);
 }

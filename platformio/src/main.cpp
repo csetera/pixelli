@@ -49,14 +49,14 @@ void setup() {
     Serial.printf("Starting version built: %s\n", BUILD_TIMESTAMP_STR);
     Serial.flush();
 
-    /*
+    #ifndef WOKWI
     if (!LittleFS.begin(true)) {
         Serial.println("An Error has occurred while mounting LittleFS");
         return;
     }
-*
+
     SettingsManager::get().readSettings();
-    */
+    #endif
 
     ServiceRegistry::get().init(&scheduler);
     DisplayManager &displayManager = DisplayManager::get();
@@ -71,31 +71,6 @@ void setup() {
  * @brief Standard Arduino method called repeatedly
  */
 void loop() {
-    /*
-    DisplayManager &displayManager = DisplayManager::get();
-    Adafruit_GFX &gfx = displayManager.getGraphics();
-
-    for (int y = 0; y < gfx.height(); y++) {
-        for (int x = 0; x < gfx.width(); x++) {
-            gfx.startWrite();
-            gfx.fillScreen(0);
-            gfx.drawPixel(x, y, 0B1111100000000000);
-            gfx.endWrite();
-
-            delay(100);
-        }
-    }
-    /*
-    #else
-    */
-   Serial.println("Loop Start");
-   Serial.flush();
-
     networkManager.loop();
     scheduler.execute();
-   
-   Serial.println("Loop delay");
-   Serial.flush();
-
-   delay(1000);
 }
