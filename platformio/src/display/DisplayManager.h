@@ -93,6 +93,10 @@ public:
      */
     void widgetDisplayComplete();
 
+    #ifndef SPI_ATTACHED_MATRIX
+    void setLed(int index, CRGB rgb);
+    #endif
+
 private:
     enum DisplayState {
         CONNECTING,

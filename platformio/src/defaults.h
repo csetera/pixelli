@@ -56,6 +56,10 @@
     #define SPI_DISPLAY_ROTATE 0
 #endif
 
+#ifndef STATIC_WIDGET_DISPLAY_SECONDS
+    #define STATIC_WIDGET_DISPLAY_SECONDS 15
+#endif
+
 // Pull in the definition of the matrix dynamically
 #define STRINGIFY(x) #x
 #define MAKE_STRING(x) STRINGIFY(x)

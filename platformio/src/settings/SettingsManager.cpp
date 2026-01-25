@@ -14,7 +14,7 @@ SettingsManager& SettingsManager::get() {
 }
 
 SettingsManager::SettingsManager() {
-    newsColor = CRGB::White;
+    newsColor = CRGB::Red;
 };
 
 /**

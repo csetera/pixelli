@@ -71,7 +71,7 @@ void DisplayManager::displayNews() {
  */
 void DisplayManager::displayTemp() {
     displayState = DisplayState::TEMP;
-    tempWidget->displayForSeconds(15);
+    tempWidget->displayForSeconds(STATIC_WIDGET_DISPLAY_SECONDS);
 }
 
 /**
@@ -79,7 +79,7 @@ void DisplayManager::displayTemp() {
  */
 void DisplayManager::displayTime() {
     displayState = DisplayState::TIME;
-    timeWidget->displayForSeconds(15);
+    timeWidget->displayForSeconds(STATIC_WIDGET_DISPLAY_SECONDS);
 }
 
 /**
@@ -178,6 +178,12 @@ void DisplayManager::startDisplay() {
     connectingWidget->startDisplay();
     #endif
 }
+
+#ifndef SPI_ATTACHED_MATRIX
+void DisplayManager::setLed(int index, CRGB color) {
+    leds[index] = color;
+}
+#endif
 
 /**
  * @brief Csllback from the Widget that it has completed display and

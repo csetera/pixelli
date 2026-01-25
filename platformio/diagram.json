@@ -6,24 +6,32 @@
     {
       "type": "board-esp32-s3-devkitc-1",
       "id": "esp",
-      "top": 95.82,
-      "left": -158.63,
+      "top": 35.27,
+      "left": -161.12,
+      "rotate": 90,
       "attrs": { "fastTLS": "1" }
     },
-    { "type": "wokwi-ili9341", "id": "lcd1", "top": 62.5, "left": 78, "rotate": 90, "attrs": {} }
+    {
+      "type": "wokwi-neopixel-matrix",
+      "id": "neomatrix",
+      "top": -305.28,
+      "left": -532.39,
+      "attrs": {
+        "rows": "16",
+        "cols": "32",
+        "pin": "3",
+        "matrixBrightness": "25",
+        "_temp_gamma": "0.5",
+        "pixelate": "square"
+      }
+    }
   ],
   "connections": [
     [ "esp:TX", "$serialMonitor:RX", "", [] ],
     [ "esp:RX", "$serialMonitor:TX", "", [] ],
-    [ "lcd1:VCC", "esp:3V3.1", "red", [ "v-67.2", "h-182.35" ] ],
-    [ "lcd1:MOSI", "esp:11", "violet", [ "h-67.2", "v86.57" ] ],
-    [ "lcd1:MISO", "esp:13", "gray", [ "h-28.8", "v76.97" ] ],
-    [ "lcd1:SCK", "esp:12", "white", [ "h-48", "v86.57" ] ],
-    [ "lcd1:GND", "esp:GND.2", "black", [ "h-76.8", "v-28.62" ] ],
-    [ "lcd1:LED", "esp:3V3.2", "purple", [ "h9.6", "v-153.61", "h-220.8", "v48" ] ],
-    [ "lcd1:CS", "esp:10", "green", [ "h-201.6", "v105.6" ] ],
-    [ "esp:3", "lcd1:RST", "orange", [ "h19.15", "v-38.4" ] ],
-    [ "lcd1:D/C", "esp:46", "blue", [ "h-76.8", "v38.4" ] ]
+    [ "esp:GND.1", "neomatrix:GND", "black", [ "v-38.45", "h67.21" ] ],
+    [ "esp:5V", "neomatrix:VCC", "red", [ "v-28.85", "h67.21" ] ],
+    [ "esp:5", "neomatrix:DIN", "green", [ "v-28.85", "h-76.79" ] ]
   ],
   "dependencies": {}
 }

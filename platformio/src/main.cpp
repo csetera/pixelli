@@ -62,8 +62,8 @@ void setup() {
     DisplayManager &displayManager = DisplayManager::get();
     displayManager.init(&scheduler);
     displayManager.clear();
+    
     displayManager.startDisplay();
-
     networkManager.start();
 }
 
@@ -71,6 +71,17 @@ void setup() {
  * @brief Standard Arduino method called repeatedly
  */
 void loop() {
-    networkManager.loop();
-    scheduler.execute();
+    #ifndef LED_CHECK
+        networkManager.loop();
+        scheduler.execute();
+    #else
+        DisplayManager &displayManager = DisplayManager::get();
+
+        for (int i = 0; i < NUM_LEDS; i++) {
+            displayManager.getGraphics().fillScreen(0);
+            displayManager.setLed(i, CRGB::Red);
+            displayManager.show();
+            delay(500);
+        }
+    #endif
 }
