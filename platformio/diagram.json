@@ -9,7 +9,12 @@
       "top": 35.27,
       "left": -161.12,
       "rotate": 90,
-      "attrs": { "fastTLS": "1" }
+      "attrs": { 
+        "fastTLS": "1",
+        "flashSize": "16",
+        "psramSize": "8",
+        "psramType": "octal"
+      }
     },
     {
       "type": "wokwi-neopixel-matrix",

@@ -35,10 +35,34 @@
 #include <services/ServiceRegistry.h>
 #include <widgets/StaticTextWidget.h>
 
+#include "esp_partition.h"
 #include "build_info.h"
 
 AppNetworkManager networkManager;
 Scheduler scheduler;
+
+#ifdef DUMP_PARTITIONS
+/**
+ * Dump the parition table.
+ */
+void dumpPartitionTable() {
+    const esp_partition_t *part = esp_partition_find_first(ESP_PARTITION_TYPE_APP, ESP_PARTITION_SUBTYPE_ANY, NULL);
+    if (part) {
+        Serial.printf("App partition: %s at 0x%08x size 0x%x\n", part->label, part->address, part->size);
+    }
+
+    // Iterate all:
+    esp_partition_iterator_t it = esp_partition_find(ESP_PARTITION_TYPE_ANY, ESP_PARTITION_SUBTYPE_ANY, NULL);
+
+    while (it != NULL) {
+        const esp_partition_t *p = esp_partition_get(it);
+        Serial.printf("%s (%s): 0x%08x size 0x%x\n", p->label, p->type == ESP_PARTITION_TYPE_APP ? "app" : "data", p->address, p->size);
+        it = esp_partition_next(it);
+    }
+
+    esp_partition_iterator_release(it);
+}
+#endif
 
 /**
  * @brief Standard Arduino setup routine.  Called once.
@@ -49,15 +73,16 @@ void setup() {
     Serial.printf("Starting version built: %s\n", BUILD_TIMESTAMP_STR);
     Serial.flush();
 
-    #ifndef WOKWI
+    #ifdef DUMP_PARTITIONS
+        dumpPartitionTable();
+    #endif
+
     if (!LittleFS.begin(true)) {
         Serial.println("An Error has occurred while mounting LittleFS");
         return;
     }
 
     SettingsManager::get().readSettings();
-    #endif
-
     ServiceRegistry::get().init(&scheduler);
     DisplayManager &displayManager = DisplayManager::get();
     displayManager.init(&scheduler);

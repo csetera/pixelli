@@ -1,6 +1,6 @@
 [wokwi]
 version=1
-firmware='.pio/build/esp32_wokwi/firmware.bin'
+firmware='.pio/build/esp32_wokwi/wokwi_image.bin'
 elf='.pio/build/esp32_wokwi/firmware.elf'
 gdbServerPort=53333
 
